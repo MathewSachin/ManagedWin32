@@ -1,5 +1,6 @@
-﻿namespace ManagedWin32
+namespace ManagedWin32
 {
     public interface IEnumConstraint { }
+
     public class DelegateConstraint { }
 }

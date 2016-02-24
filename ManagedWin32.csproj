@@ -53,7 +53,6 @@
     <Compile Include="Api\Structures.cs" />
     <Compile Include="Api\User32.cs" />
     <Compile Include="BitHelper.cs" />
-    <Compile Include="Constraints.cs" />
     <Compile Include="Desktop.cs" />
     <Compile Include="ExitWindows.cs" />
     <Compile Include="FolderBrowserDialog.cs" />
@@ -71,41 +70,18 @@
     <Compile Include="SoundPlayer.cs" />
     <Compile Include="StructSerializer.cs" />
     <Compile Include="SystemParams.cs" />
+    <Compile Include="Unconstrain.cs" />
     <Compile Include="WindowHandler.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <UsingTask TaskName="FileReplace" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
-    <ParameterGroup>
-      <FileName ParameterType="System.String" Required="true" />
-      <Source ParameterType="System.String" Required="true" />
-      <Replacement ParameterType="System.String" Required="true" />
-    </ParameterGroup>
-    <Task>
-      <Code Type="Fragment" Language="cs"><![CDATA[
-		string content = File.ReadAllText(FileName);
-		content = content.Replace(Source, Replacement);
-		File.WriteAllText(FileName, content);
-	]]></Code>
-    </Task>
-  </UsingTask>
-  <Target Name="AfterBuild">
-    <GetFrameworkPath>
-      <Output TaskParameter="Path" PropertyName="FW" />
-    </GetFrameworkPath>
-    <GetFrameworkSdkPath>
-      <Output TaskParameter="Path" PropertyName="SDK" />
-    </GetFrameworkSdkPath>
+  <Import Project="packages\Unconstrain.0.1.2\build\Unconstrain.targets" Condition="Exists('packages\Unconstrain.0.1.2\build\Unconstrain.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-      <ILDASM>"$(SDK)bin\NETFX 4.0 Tools\ildasm.exe"</ILDASM>
-      <ILASM>"$(FW)\ilasm.exe"</ILASM>
-      <IlFile>$(OutputPath)$(AssemblyName).il</IlFile>
-      <DllFile>$(OutputPath)$(AssemblyName).dll</DllFile>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Exec Command="$(ILDASM) /OUT=$(IlFile) $(DllFile)" WorkingDirectory="$(ProjectDir)" />
-    <FileReplace FileName="$(IlFile)" Source="($(RootNamespace).DelegateConstraint)" Replacement="([mscorlib]System.Delegate)" />
-    <FileReplace FileName="$(IlFile)" Source="([mscorlib]System.ValueType, $(RootNamespace).IEnumConstraint)" Replacement="([mscorlib]System.Enum)" />
-    <FileReplace FileName="$(IlFile)" Source="($(RootNamespace).IEnumConstraint), [mscorlib]System.ValueType" Replacement="([mscorlib]System.Enum)" />
-    <FileReplace FileName="$(IlFile)" Source="($(RootNamespace).IEnumConstraint)" Replacement="([mscorlib]System.Enum)" />
-    <Exec Command="$(ILASM) /OUTPUT=$(DllFile) /DLL $(IlFile)" WorkingDirectory="$(ProjectDir)" />
+    <Error Condition="!Exists('packages\Unconstrain.0.1.2\build\Unconstrain.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Unconstrain.0.1.2\build\Unconstrain.targets'))" />
   </Target>
 </Project>
