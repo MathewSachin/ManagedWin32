@@ -40,17 +40,62 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\AdvApi32.cs" />
-    <Compile Include="Api\Enumerations.cs" />
-    <Compile Include="Api\Delegates.cs" />
-    <Compile Include="Api\DWMApi.cs" />
-    <Compile Include="Api\Gdi32.cs" />
-    <Compile Include="Api\Kernel32.cs" />
-    <Compile Include="Api\PowrProf.cs" />
+    <Compile Include="Api\AdvApi32\AdvApi32.cs" />
+    <Compile Include="Api\AdvApi32\TokPriv1Luid.cs" />
+    <Compile Include="Api\DWMApi\Enumerations\DWMThumbnailFlags.cs" />
+    <Compile Include="Api\DWMApi\Enumerations\DWMBlurBehindFlags.cs" />
+    <Compile Include="Api\DWMApi\Enumerations\DWMWindowAttribute.cs" />
+    <Compile Include="Api\DWMApi\Structures\DWMBlurBehind.cs" />
+    <Compile Include="Api\DWMApi\Structures\DWMThumbnailProperties.cs" />
+    <Compile Include="Api\Icon Structs.cs" />
+    <Compile Include="Api\RECT.cs" />
+    <Compile Include="Api\User32\Delegates\EnumDesktopProc.cs" />
+    <Compile Include="Api\User32\Delegates\EnumDesktopWIndowsProc.cs" />
+    <Compile Include="Api\User32\Delegates\EnumWindowsProc.cs" />
+    <Compile Include="Api\User32\Delegates\HookProc.cs" />
+    <Compile Include="Api\User32\Delegates\WindowProcedureHandler.cs" />
+    <Compile Include="Api\User32\Enumerations\Enumerations.cs" />
+    <Compile Include="Api\Kernel32\Structures\ProcessInfo.cs" />
+    <Compile Include="Api\Kernel32\Structures\RGBQuad.cs" />
+    <Compile Include="Api\Kernel32\Structures\StartUpInfo.cs" />
+    <Compile Include="Api\Kernel32\Enumerations\ThreadAccess.cs" />
+    <Compile Include="Api\Kernel32\Enumerations\ProcessAccess.cs" />
+    <Compile Include="Api\Kernel32\Enumerations\ResourceType.cs" />
+    <Compile Include="Api\Kernel32\Enumerations\LoadLibraryFlags.cs" />
+    <Compile Include="Api\Kernel32\Enumerations\ResourceMemoryType.cs" />
+    <Compile Include="Api\PowrProf\Structures\BatteryReportingScale.cs" />
+    <Compile Include="Api\PowrProf\Enumerations\PowerDataAccessor.cs" />
+    <Compile Include="Api\PowrProf\Enumerations\PowerPlatformRole.cs" />
+    <Compile Include="Api\PowrProf\Structures\SystemPowerCapabilities.cs" />
+    <Compile Include="Api\PowrProf\Enumerations\SystemPowerState.cs" />
+    <Compile Include="Api\Shell32\Enumerations\BalloonFlags.cs" />
+    <Compile Include="Api\Shell32\Enumerations\IconDataMembers.cs" />
+    <Compile Include="Api\Shell32\Enumerations\IconState.cs" />
+    <Compile Include="Api\Shell32\Enumerations\MouseEvent.cs" />
+    <Compile Include="Api\Shell32\Enumerations\NotifyCommand.cs" />
+    <Compile Include="Api\Shell32\Enumerations\NotifyIconVersion.cs" />
+    <Compile Include="Api\Shell32\Enumerations\ScreenEdge.cs" />
+    <Compile Include="Api\Shell32\Structures\AppBarData.cs" />
+    <Compile Include="Api\Shell32\Structures\NotifyIconData.cs" />
+    <Compile Include="Api\Shell32\Structures\SHFileInfo.cs" />
+    <Compile Include="Api\Shell32\Enumerations\SHGetFileInfoFlags.cs" />
+    <Compile Include="Api\User32\Delegates\WinEventDelegates.cs" />
+    <Compile Include="Api\DWMApi\DWMApi.cs" />
+    <Compile Include="Api\Gdi32\DeviceCaps.cs" />
+    <Compile Include="Api\Gdi32\Gdi32.cs" />
+    <Compile Include="Api\Kernel32\Delegates\EnumResNameProc.cs" />
+    <Compile Include="Api\Kernel32\Delegates\EnumResTypeProc.cs" />
+    <Compile Include="Api\Kernel32\Kernel32.cs" />
+    <Compile Include="Api\PowrProf\PowrProf.cs" />
     <Compile Include="Api\PSApi.cs" />
-    <Compile Include="Api\Shell32.cs" />
-    <Compile Include="Api\Structures.cs" />
-    <Compile Include="Api\User32.cs" />
+    <Compile Include="Api\Shell32\Shell32.cs" />
+    <Compile Include="Api\User32\Structures\BlendFunction.cs" />
+    <Compile Include="Api\User32\Structures\FlashWindowInfo.cs" />
+    <Compile Include="Api\User32\Structures\Structures.cs" />
+    <Compile Include="Api\User32\Enumerations\LoadImageTypes.cs" />
+    <Compile Include="Api\User32\Enumerations\LookupIconIdFromDirectoryExFlags.cs" />
+    <Compile Include="Api\User32\User32.cs" />
+    <Compile Include="Api\Win32Error.cs" />
     <Compile Include="BitHelper.cs" />
     <Compile Include="Desktop.cs" />
     <Compile Include="ExitWindows.cs" />
@@ -72,6 +117,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\Unconstrain.0.1.2\build\Unconstrain.targets" Condition="Exists('packages\Unconstrain.0.1.2\build\Unconstrain.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -1,8 +1,9 @@
 # ManagedWin32
-Collection of Managed Wrappers and PInvokes around Win32
+Collection of Managed Wrappers and PInvokes around Win32.
 
-This Library is not fully complete, you could help me do the same by creating a Pull Request
+## Dependencies
+* Unconstrain: NuGet package providing `enum` and `delegate` generic constraints in C#.
 
-##Acknowledgements
-* FolderBrowserDialog is from WPFContrib
-* Desktop.cs, MemoryScanner, NotifyIcon and much more is from CodeProject
+## Acknowledgements
+* FolderBrowserDialog is from [WPFContrib](http://wpfcontrib.codeplex.com).
+* Desktop.cs, MemoryScanner and much more is from [CodeProject](http://codeproject.com).

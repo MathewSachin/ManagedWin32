@@ -18,7 +18,7 @@ namespace ManagedWin32
             var PathBuffer = new StringBuilder(FileName, MAX_PATH);
             int i;
 
-            bool Result = User32.SHPickIconDialog(OwnerWindow, PathBuffer, MAX_PATH, out i);
+            bool Result = Shell32.SHPickIconDialog(OwnerWindow, PathBuffer, MAX_PATH, out i);
             if (Result)
             {
                 FileName = Environment.ExpandEnvironmentVariables(PathBuffer.ToString());

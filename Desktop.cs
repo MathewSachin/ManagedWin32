@@ -1,8 +1,9 @@
+using ManagedWin32.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using ManagedWin32.Api;
+using System.Threading;
 
 namespace ManagedWin32
 {
@@ -177,11 +178,11 @@ namespace ManagedWin32
             if (!IsOpen) return null;
 
             // set startup parameters.
-            STARTUPINFO si = new STARTUPINFO();
+            StartUpInfo si = new StartUpInfo();
             si.cb = Marshal.SizeOf(si);
             si.lpDesktop = DesktopName;
 
-            PROCESS_INFORMATION pi = new PROCESS_INFORMATION();
+            ProcessInfo pi = new ProcessInfo();
 
             // start the process.
             bool result = Kernel32.CreateProcess(null, path, IntPtr.Zero, IntPtr.Zero, true, NORMAL_PRIORITY_CLASS, IntPtr.Zero, null, ref si, ref pi);
@@ -287,7 +288,7 @@ namespace ManagedWin32
         /// <returns>True if the threads desktop was successfully changed.</returns>
         public static Desktop Current
         {
-            get { return new Desktop(User32.GetThreadDesktop(AppDomain.GetCurrentThreadId())); }
+            get { return new Desktop(User32.GetThreadDesktop(Thread.CurrentThread.ManagedThreadId)); }
             set
             {
                 // set threads desktop.

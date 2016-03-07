@@ -6,13 +6,15 @@ namespace ManagedWin32.Api
 {
     public static class PSApi
     {
-        [DllImport("psapi", SetLastError = true)]
+        const string DllName = "psapi.dll";
+
+        [DllImport(DllName)]
         public static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, StringBuilder lpFilename, uint nSize);
 
-        [DllImport("psapi", SetLastError = true)]
+        [DllImport(DllName)]
         public static extern uint GetProcessImageFileName(IntPtr hProcess, StringBuilder lpImageFileName, uint nSize);
 
-        [DllImport("psapi")]
+        [DllImport(DllName)]
         public static extern int EmptyWorkingSet(IntPtr hwProc);
     }
 }

@@ -1,27 +1,28 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using System.Drawing;
-
-namespace ManagedWin32.Api
+﻿namespace ManagedWin32.Api
 {
+    // TODO: Rename enum members
     public enum DeviceCaps
     {
         /// <summary>
         /// Device driver version
         /// </summary>
-        DRIVERVERSION = 0,
+        DriverVersion = 0,
+
         /// <summary>
         /// Device classification
         /// </summary>
-        TECHNOLOGY = 2,
+        Technology = 2,
+
         /// <summary>
         /// Horizontal size in millimeters
         /// </summary>
-        HORZSIZE = 4,
+        HorizontalSize = 4,
+
         /// <summary>
         /// Vertical size in millimeters
         /// </summary>
-        VERTSIZE = 6,
+        VerticalSize = 6,
+
         /// <summary>
         /// Horizontal width in pixels
         /// </summary>
@@ -167,55 +168,5 @@ namespace ManagedWin32.Api
         /// Preferred blt alignment
         /// </summary>
         BLTALIGNMENT = 119
-    }
-
-    public static class Gdi32
-    {
-        [DllImport("gdi32.dll")]
-        public static extern IntPtr CreateCompatibleDC(IntPtr hDC);
-
-        [DllImport("gdi32.dll")]
-        public static extern bool DeleteDC(IntPtr hDC);
-
-        [DllImport("gdi32.dll")]
-        public static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObject);
-
-        [DllImport("gdi32.dll")]
-        public static extern bool MaskBlt(IntPtr hdcDest, int nXDest, int nYDest, int nWidth,
-           int nHeight, IntPtr hdcSrc, int nXSrc, int nYSrc, IntPtr hbmMask, int xMask,
-           int yMask, uint dwRop);
-
-        [DllImport("gdi32", SetLastError = true)]
-        public static extern bool StretchBlt(SafeHandle hdcDest, int nXOriginDest, int nYOriginDest, int nWidthDest, int nHeightDest, SafeHandle hdcSrc, int nXOriginSrc, int nYOriginSrc, int nWidthSrc, int nHeightSrc, CopyPixelOperation dwRop);
-
-        [DllImport("gdi32.dll")]
-        public static extern int SetBkColor(IntPtr hDC, uint crColor);
-
-        [DllImport("gdi32.dll", CharSet = CharSet.Auto)]
-        public static extern bool BitBlt(IntPtr hdcDest, int nXDest, int nYDest, int nWidth, int nHeight, IntPtr hdcSrc, int nXSrc, int nYSrc, CopyPixelOperation dwRop);
-
-        [DllImport("gdi32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr CreateDIBSection(IntPtr hdc, [In] ref BitmapInfo pbmi, uint iUsage, out IntPtr ppvBits, IntPtr hSection, uint dwOffset);
-
-        [DllImport("gdi32.dll")]
-        public static extern IntPtr CreateCompatibleBitmap(IntPtr hDC, int nWidth, int nHeight);
-
-        [DllImport("gdi32.dll")]
-        public static extern bool DeleteObject(IntPtr hObject);
-
-        [DllImport("gdi32", SetLastError = true)]
-        public static extern IntPtr CreateRectRgn(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect);
-
-        [DllImport("gdi32", SetLastError = true)]
-        public static extern uint GetPixel(SafeHandle hdc, int nXPos, int nYPos);
-
-        [DllImport("gdi32", SetLastError = true)]
-        public static extern int GetDeviceCaps(SafeHandle hdc, DeviceCaps nIndex);
-
-        [DllImport("gdi32.dll")]
-        public static extern IntPtr CreateDC(string lpszDriver, string lpszDevice, string lpszOutput, int lpInitData);
-
-        [DllImport("gdi32.dll")]
-        public static extern int SaveDC(IntPtr hdc);
     }
 }

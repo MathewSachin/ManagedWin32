@@ -6,53 +6,55 @@ namespace ManagedWin32.Api
 {
     public static class PowerProf
     {
-        [DllImport("powrprof.dll")]
+        const string DllName = "powrprof.dll";
+
+        [DllImport(DllName)]
         public static extern int CallNtPowerInformation(int InformationLevel, IntPtr lpInputBuffer,
             int nInputBufferSize, ref SystemPowerCapablities lpOutputBuffer, int nOutputBufferSize);
 
-        [DllImport("PowrProf.dll")]
+        [DllImport(DllName)]
         public static extern PowerPlatformRole PowerDeterminePlatformRole();
 
-        public static bool IsLaptop { get { return PowerDeterminePlatformRole() == PowerPlatformRole.Mobile; } }
+        public static bool IsLaptop => PowerDeterminePlatformRole() == PowerPlatformRole.Mobile;
 
         /// <summary>
         /// Full call to method PowerSettingAccessCheck().
         /// </summary>
         /// <param name="AccessFlags">One or more check specifier flags</param>
         /// <param name="PowerGuid">The relevant Power Policy GUID</param>
-        [DllImport("PowrProf.dll")]
+        [DllImport(DllName)]
         [return: MarshalAs(UnmanagedType.U4)]
         public static extern int PowerSettingAccessCheck(PowerDataAccessor AccessFlags, [MarshalAs(UnmanagedType.LPStruct)] Guid PowerGuid);
 
-        [DllImport("PowrProf.dll")]
+        [DllImport(DllName)]
         static extern int PowerReadACValueIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, ref int Value);
 
-        [DllImport("PowrProf.dll")]
+        [DllImport(DllName)]
         static extern int PowerReadDCValueIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, ref int Value);
 
-        [DllImport("PowrProf.dll")]
+        [DllImport(DllName)]
         static extern int PowerReadACDefaultIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, ref int Value);
 
-        [DllImport("PowrProf.dll")]
+        [DllImport(DllName)]
         static extern int PowerReadDCDefaultIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, ref int Value);
 
-        [DllImport("PowrProf.dll")]
+        [DllImport(DllName)]
         static extern int PowerWriteACValueIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, int AcValueIndex);
 
-        [DllImport("PowrProf.dll")]
+        [DllImport(DllName)]
         static extern int PowerWriteDCValueIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, int AcValueIndex);
         
-        [DllImport("PowrProf.dll")]
+        [DllImport(DllName)]
         static extern int PowerGetActiveScheme(int UserRootPowerKey, ref IntPtr ActivePolicyGuid);
 
-        [DllImport("PowrProf.dll")]
+        [DllImport(DllName)]
         static extern int PowerSetActiveScheme(int UserRootPowerKey, ref Guid SchemeGuid);
 
-        [DllImport("powrprof.dll")]
+        [DllImport(DllName)]
         public static extern int PowerEnumerate(int RootPowerKey, IntPtr SchemeGuid, IntPtr SubGroupOfPowerSettingGuid,
             int AcessFlags, int Index, ref Guid Buffer, ref int BufferSize);
 
-        [DllImport("powrprof.dll")]
+        [DllImport(DllName)]
         public static extern int PowerReadFriendlyName(IntPtr RootPowerKey, ref Guid SchemeGuid, IntPtr SubGroupOfPowerSettingGuid,
             IntPtr PowerSettingGuid, IntPtr Buffer, ref int BufferSize);
 
@@ -61,7 +63,7 @@ namespace ManagedWin32.Api
             get
             {
                 IntPtr guidPtr = new IntPtr();
-                int res = PowerProf.PowerGetActiveScheme(0, ref guidPtr);
+                int res = PowerGetActiveScheme(0, ref guidPtr);
                 if (res != 0) throw new Win32Exception((int)res);
 
                 Guid ret = (Guid)Marshal.PtrToStructure(guidPtr, typeof(Guid));
@@ -71,7 +73,7 @@ namespace ManagedWin32.Api
             }
             set
             {
-                int res = PowerProf.PowerSetActiveScheme(0, ref value);
+                int res = PowerSetActiveScheme(0, ref value);
                 if (res != 0) throw new Win32Exception((int)res);
             }
         }
@@ -80,8 +82,8 @@ namespace ManagedWin32.Api
         {
             int res = 0;
 
-            if (ac) res = PowerProf.PowerReadACValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
-            else res = PowerProf.PowerReadDCValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
+            if (ac) res = PowerReadACValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
+            else res = PowerReadDCValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
 
             if (res != 0) throw new Win32Exception((int)res);
 
@@ -92,8 +94,8 @@ namespace ManagedWin32.Api
         {
             int res = 0;
 
-            if (ac) res = PowerProf.PowerReadACDefaultIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
-            else res = PowerProf.PowerReadDCDefaultIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
+            if (ac) res = PowerReadACDefaultIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
+            else res = PowerReadDCDefaultIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
 
             if (res != 0) throw new Win32Exception((int)res);
             return res;
@@ -101,12 +103,12 @@ namespace ManagedWin32.Api
 
         public static int WritePowerSetting(bool ac, ref Guid activeSchemeGuid, ref Guid subGroupGuid, ref Guid settingGuid, int newValue)
         {
-            int res = ac ? PowerProf.PowerWriteACValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, newValue)
-                : PowerProf.PowerWriteDCValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, newValue);
+            int res = ac ? PowerWriteACValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, newValue)
+                : PowerWriteDCValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, newValue);
 
             if (res != 0) throw new Win32Exception((int)res);
 
-            res = PowerProf.PowerSetActiveScheme(0, ref activeSchemeGuid);
+            res = PowerSetActiveScheme(0, ref activeSchemeGuid);
             if (res != 0) throw new Win32Exception((int)res);
 
             return res;
@@ -116,21 +118,22 @@ namespace ManagedWin32.Api
         {
             get
             {
-                Guid subgroup = new Guid("fea3413e-7e05-4911-9a71-700331f1c294");
-                Guid setting = new Guid("245d8541-3943-4422-b025-13a784f679b7");
+                Guid subgroup = new Guid("fea3413e-7e05-4911-9a71-700331f1c294"),
+                     setting = new Guid("245d8541-3943-4422-b025-13a784f679b7");
 
-                Guid Buffer = new Guid();
-                Guid BalancedGuid = new Guid();
+                Guid Buffer = new Guid(),
+                     BalancedGuid = new Guid();
+
                 int SchemeIndex = 0;
                 int BufferSize = (int)Marshal.SizeOf(typeof(Guid));
 
-                while (0 == PowerProf.PowerEnumerate(0, IntPtr.Zero, IntPtr.Zero, 16, SchemeIndex, ref Buffer, ref BufferSize))
+                while (0 == PowerEnumerate(0, IntPtr.Zero, IntPtr.Zero, 16, SchemeIndex, ref Buffer, ref BufferSize))
                 {
-                    int ACvalue = 0;
-                    int DCvalue = 0;
+                    int ACvalue = 0,
+                        DCvalue = 0;
 
-                    PowerProf.ReadPowerSetting(true, ref Buffer, ref subgroup, ref setting, ref ACvalue);
-                    PowerProf.ReadPowerSetting(false, ref Buffer, ref subgroup, ref setting, ref DCvalue);
+                    ReadPowerSetting(true, ref Buffer, ref subgroup, ref setting, ref ACvalue);
+                    ReadPowerSetting(false, ref Buffer, ref subgroup, ref setting, ref DCvalue);
 
                     if ((2 == ACvalue) && (2 == DCvalue)) BalancedGuid = Buffer;
                     SchemeIndex++;
@@ -141,15 +144,15 @@ namespace ManagedWin32.Api
 
         public static int CheckPowerSetting(bool ac, Guid guid)
         {
-            return ac ? PowerProf.PowerSettingAccessCheck(PowerDataAccessor.ACCESS_AC_POWER_SETTING_INDEX, guid)
-                : PowerProf.PowerSettingAccessCheck(PowerDataAccessor.ACCESS_DC_POWER_SETTING_INDEX, guid);
+            return PowerSettingAccessCheck(ac ? PowerDataAccessor.ACCESS_AC_POWER_SETTING_INDEX
+                                              : PowerDataAccessor.ACCESS_DC_POWER_SETTING_INDEX, guid);
         }
 
         public static int CheckActiveSchemeAccess
         {
             get
             {
-                int res = PowerProf.PowerSettingAccessCheck(PowerDataAccessor.ACCESS_ACTIVE_SCHEME, new Guid());
+                int res = PowerSettingAccessCheck(PowerDataAccessor.ACCESS_ACTIVE_SCHEME, new Guid());
                 if (res != 0) throw new Win32Exception((int)res);
                 return res;
             }

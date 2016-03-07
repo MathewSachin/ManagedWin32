@@ -110,7 +110,7 @@ namespace ManagedWin32
                 throw new Exception();
         }
 
-        public int Size => (int)Kernel32.SizeofResource(LibraryHandle, Handle);
+        public int Size => Kernel32.SizeofResource(LibraryHandle, Handle);
 
         public byte[] Data
         {
