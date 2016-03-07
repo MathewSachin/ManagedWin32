@@ -31,15 +31,15 @@ namespace ManagedWin32
         #region Events
         public event Action<int> ScanProgressChanged;
 
-        protected void OnScanProgressChanged(int Progress) { if (ScanProgressChanged != null)ScanProgressChanged(Progress); }
+        protected void OnScanProgressChanged(int Progress) => ScanProgressChanged?.Invoke(Progress);
 
         public event Action<int[]> ScanCompleted;
 
-        protected void OnScanCompleted(int[] Value) { if (ScanCompleted != null)ScanCompleted(Value); }
+        protected void OnScanCompleted(int[] Value) => ScanCompleted?.Invoke(Value);
 
         public event Action ScanCanceled;
 
-        protected void OnScanCancelled() { if (ScanCanceled != null)ScanCanceled(); }
+        protected void OnScanCancelled() => ScanCanceled?.Invoke();
         #endregion
     }
 
@@ -390,7 +390,7 @@ namespace ManagedWin32
         System.Timers.Timer timer;
      
         //a property to retrieve the current list of memory addresses set to be freezed.
-        public MemoryRecords[] FreezedMemoryAddresses { get { return records.ToArray(); } }
+        public MemoryRecords[] FreezedMemoryAddresses => records.ToArray();
      
         public MemoryFreeze(Process process)
         {
@@ -404,7 +404,7 @@ namespace ManagedWin32
         }
 
         //Add a memory address and a 16 bit value to be written in the address.
-        public void AddMemoryAddress(int MemoryAddress, T Value) { records.Add(new MemoryRecords(MemoryAddress, Value)); }
+        public void AddMemoryAddress(int MemoryAddress, T Value) => records.Add(new MemoryRecords(MemoryAddress, Value));
 
         //Start the timer with the given Interval to start looping and so start freezing.
         public void Start(double Interval)
@@ -414,7 +414,7 @@ namespace ManagedWin32
         }
 
         //Stop the timer and so stop the freezing loops.
-        public void Stop() { timer.Stop(); }
+        public void Stop() => timer.Stop();
         
         //The method will be called in every timer's ticking.
         void TimerElapsed(object sender, System.Timers.ElapsedEventArgs e)

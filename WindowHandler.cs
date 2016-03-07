@@ -28,7 +28,7 @@ namespace ManagedWin32
         #endregion
 
         #region Properties
-        public IntPtr Handle { get; private set; }
+        public IntPtr Handle { get; }
 
         public string Title
         {
@@ -53,13 +53,13 @@ namespace ManagedWin32
             }
         }
 
-        public bool IsMaximized { get { return User32.IsZoomed(Handle); } }
+        public bool IsMaximized => User32.IsZoomed(Handle);
 
-        public bool IsMinimized { get { return User32.IsIconic(Handle); } }
+        public bool IsMinimized => User32.IsIconic(Handle);
 
-        public bool IsForegroundWindow { get { return Handle == User32.GetForegroundWindow(); } }
+        public bool IsForegroundWindow => Handle == User32.GetForegroundWindow();
 
-        public bool IsUntitled { get { return String.IsNullOrEmpty(Title); } }
+        public bool IsUntitled => String.IsNullOrEmpty(Title);
 
         /// <summary>
         /// Sets this Window Object's visibility
@@ -77,7 +77,7 @@ namespace ManagedWin32
             }
         }
 
-        public WindowHandler Parent { get { return new WindowHandler(User32.GetParent(Handle)); } }
+        public WindowHandler Parent => new WindowHandler(User32.GetParent(Handle));
 
         public bool IsEnabled
         {
@@ -158,7 +158,7 @@ namespace ManagedWin32
             }
         }
 
-        public static WindowHandler DesktopWindow { get { return new WindowHandler(User32.GetDesktopWindow()); } }
+        public static WindowHandler DesktopWindow => new WindowHandler(User32.GetDesktopWindow());
 
         public static IEnumerable<WindowHandler> Enumerate()
         {
@@ -216,15 +216,15 @@ namespace ManagedWin32
         }
         
         #region Window States
-        public void Minimize() { User32.ShowWindowAsync(Handle, ShowWindowFlags.Minimize); }
+        public void Minimize() => User32.ShowWindowAsync(Handle, ShowWindowFlags.Minimize);
 
-        public void Restore() { User32.ShowWindowAsync(Handle, ShowWindowFlags.Restore); }
+        public void Restore() => User32.ShowWindowAsync(Handle, ShowWindowFlags.Restore);
 
-        public void Maximize() { User32.ShowWindowAsync(Handle, ShowWindowFlags.Maximize); }
+        public void Maximize() => User32.ShowWindowAsync(Handle, ShowWindowFlags.Maximize);
 
-        public void Hide() { User32.ShowWindowAsync(Handle, ShowWindowFlags.Hide); }
+        public void Hide() => User32.ShowWindowAsync(Handle, ShowWindowFlags.Hide);
 
-        public void Close() { User32.SendMessage(Handle, WindowsMessage.Close, 0, 0); }
+        public void Close() => User32.SendMessage(Handle, WindowsMessage.Close, 0, 0);
         #endregion
     }
 }

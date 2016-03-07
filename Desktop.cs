@@ -22,7 +22,7 @@ namespace ManagedWin32
         /// <summary>
         /// Gets if a desktop is open.
         /// </summary>
-        public bool IsOpen { get { return (DesktopHandle != IntPtr.Zero); } }
+        public bool IsOpen => (DesktopHandle != IntPtr.Zero);
 
         /// <summary>
         /// Gets the name of a given desktop.
@@ -90,7 +90,7 @@ namespace ManagedWin32
 
         ~Desktop() { Dispose(); }
 
-        static Desktop Open(string name) { return new Desktop(User32.OpenDesktop(name, 0, true, DesktopAccessRights.AllRights)); }
+        static Desktop Open(string name) => new Desktop(User32.OpenDesktop(name, 0, true, DesktopAccessRights.AllRights));
         #endregion
 
         #region Methods
@@ -301,7 +301,7 @@ namespace ManagedWin32
         /// Opens the default desktop.
         /// </summary>
         /// <returns>If successful, a Desktop object, otherwise, null.</returns>
-        public static Desktop DefaultDesktop { get { return Open("Default"); } }
+        public static Desktop DefaultDesktop => Open("Default");
 
         /// <summary>
         /// Checks if the specified desktop exists.
@@ -366,6 +366,6 @@ namespace ManagedWin32
         /// <summary>
         /// Gets the desktop name.
         /// </summary>
-        public override string ToString() { return DesktopName; }
+        public override string ToString() => DesktopName;
     }
 }

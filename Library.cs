@@ -1,10 +1,10 @@
-﻿using System;
+﻿using ManagedWin32.Api;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using ManagedWin32.Api;
 
 namespace ManagedWin32
 {
@@ -59,7 +59,7 @@ namespace ManagedWin32
             return (T)(object)Marshal.GetDelegateForFunctionPointer(ptr, typeof(T));
         }
 
-        public bool HasMethod(string Name) { return Kernel32.GetProcAddress(Handle, Name) != IntPtr.Zero; }
+        public bool HasMethod(string Name) => Kernel32.GetProcAddress(Handle, Name) != IntPtr.Zero;
 
         #region Resources
         public LibraryResource FindResource(IntPtr ResourceID, ResourceType RType)
@@ -83,10 +83,10 @@ namespace ManagedWin32
             return FoundResources.ToArray();
         }
 
-        public bool HasResource(ResourceType RType) { return EnumerateResources(RType).Length != 0; }
+        public bool HasResource(ResourceType RType) => EnumerateResources(RType).Length != 0;
         #endregion
 
-        public string FileName { get; private set; }
+        public string FileName { get; }
     }
 
     public class LibraryResource
@@ -95,9 +95,9 @@ namespace ManagedWin32
 
         IntPtr LibraryHandle;
 
-        public IntPtr ResourceId { get; private set; }
+        public IntPtr ResourceId { get; }
 
-        public ResourceType ResourceType { get; private set; }
+        public ResourceType ResourceType { get; }
 
         public LibraryResource(IntPtr Handle, IntPtr LibraryHandle, ResourceType RType, IntPtr ResourceId)
         {
@@ -110,7 +110,7 @@ namespace ManagedWin32
                 throw new Exception();
         }
 
-        public int Size { get { return (int)Kernel32.SizeofResource(LibraryHandle, Handle); } }
+        public int Size => (int)Kernel32.SizeofResource(LibraryHandle, Handle);
 
         public byte[] Data
         {

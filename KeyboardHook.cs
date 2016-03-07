@@ -15,9 +15,9 @@ namespace ManagedWin32
 
         public Window Window { get; private set; }
 
-        public KeyCode Key { get; private set; }
+        public KeyCode Key { get; }
 
-        public ModifierKeyCodes Modifiers { get; private set; }
+        public ModifierKeyCodes Modifiers { get; }
         #endregion
         
         public KeyboardHook(Window Window, KeyCode Key, ModifierKeyCodes Modifiers)

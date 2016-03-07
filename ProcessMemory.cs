@@ -1,7 +1,6 @@
-﻿using System;
+﻿using ManagedWin32.Api;
+using System;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
-using ManagedWin32.Api;
 
 namespace ManagedWin32
 {

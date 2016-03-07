@@ -6,8 +6,7 @@ namespace ManagedWin32.Api
     public delegate bool EnumDesktopWindowsProc(IntPtr hDesktop, IntPtr lParam);
 
     /// <summary>
-    /// Callback delegate which is used by the Windows API to
-    /// submit window messages.
+    /// Callback delegate which is used by the Windows API to submit window messages.
     /// </summary>
     public delegate IntPtr WindowProcedureHandler(IntPtr hwnd, uint uMsg, IntPtr wparam, IntPtr lparam);
 

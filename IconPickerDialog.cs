@@ -1,8 +1,7 @@
-﻿using System;
-using System.ComponentModel;
-using System.Text;
-using ManagedWin32.Api;
+﻿using ManagedWin32.Api;
 using Microsoft.Win32;
+using System;
+using System.Text;
 
 namespace ManagedWin32
 {
@@ -10,11 +9,9 @@ namespace ManagedWin32
     {
         const int  MAX_PATH = 260;
 
-        [DefaultValue(default(string))]
-        public string FileName { get; set; }
+        public string FileName { get; set; } = null;
 
-        [DefaultValue(0)]
-        public int IconIndex { get; set; }
+        public int IconIndex { get; set; } = 0;
 
         protected override bool RunDialog(IntPtr OwnerWindow)
         {

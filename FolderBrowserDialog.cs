@@ -1,8 +1,6 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Runtime.InteropServices;
-using System.Security;
-using System.Security.Permissions;
-using Microsoft.Win32;
 
 namespace ManagedWin32
 {
@@ -102,18 +100,17 @@ namespace ManagedWin32
             BrowseShares = 0x8000
         }
 
-        [SecurityCritical, DllImport("shell32")]
-        public static extern int SHGetFolderLocation(IntPtr hwndOwner, Int32 nFolder, IntPtr hToken, uint dwReserved,
-            out IntPtr ppidl);
+        [DllImport("shell32")]
+        public static extern int SHGetFolderLocation(IntPtr hwndOwner, Int32 nFolder, IntPtr hToken, uint dwReserved, out IntPtr ppidl);
 
-        [SecurityCritical, DllImport("shell32")]
+        [DllImport("shell32")]
         public static extern int SHParseDisplayName([MarshalAs(UnmanagedType.LPWStr)] string pszName, IntPtr pbc,
             out IntPtr ppidl, uint sfgaoIn, out uint psfgaoOut);
 
-        [SecurityCritical, DllImport("shell32")]
+        [DllImport("shell32")]
         public static extern IntPtr SHBrowseForFolder(ref BROWSEINFO lbpi);
 
-        [SecurityCritical, DllImport("shell32", CharSet = CharSet.Auto)]
+        [DllImport("shell32", CharSet = CharSet.Auto)]
         public static extern bool SHGetPathFromIDList(IntPtr pidl, IntPtr pszPath);
         
         [StructLayout(LayoutKind.Sequential)]
@@ -169,7 +166,7 @@ namespace ManagedWin32
         }
 
         #region Malloc
-        [ComImport, SuppressUnmanagedCodeSecurity, Guid("00000002-0000-0000-c000-000000000046"),
+        [ComImport, Guid("00000002-0000-0000-c000-000000000046"),
          InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
         public interface IMalloc
         {
@@ -192,7 +189,6 @@ namespace ManagedWin32
             void HeapMinimize();
         }
 
-        [SecurityCritical]
         public static IMalloc GetSHMalloc()
         {
             IMalloc[] ppMalloc = new IMalloc[1];
@@ -200,31 +196,23 @@ namespace ManagedWin32
             return ppMalloc[0];
         }
 
-        [SecurityCritical, DllImport("shell32")]
+        [DllImport("shell32")]
         static extern int SHGetMalloc([Out, MarshalAs(UnmanagedType.LPArray)] IMalloc[] ppMalloc);
         #endregion
         #endregion
 
-        [SecuritySafeCritical]
         FolderBrowserOptions _dialogOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FolderBrowserDialog" /> class.
         /// </summary>
-        [SecurityCritical]
         public FolderBrowserDialog() { Initialize(); }
 
         #region Methods
         /// <summary>
         /// Resets the properties of a common dialog to their default values.
         /// </summary>
-        [SecuritySafeCritical]
-        public override void Reset()
-        {
-            new FileIOPermission(PermissionState.Unrestricted).Demand();
-
-            Initialize();
-        }
+        public override void Reset() => Initialize();
 
         /// <summary>
         /// Displays the folder browser dialog.
@@ -233,7 +221,6 @@ namespace ManagedWin32
         /// <returns>
         /// If the user clicks the OK button of the dialog that is displayed, true is returned; otherwise, false.
         /// </returns>
-        [SecuritySafeCritical]
         protected override bool RunDialog(IntPtr hwndOwner)
         {
             bool result = false;
@@ -293,7 +280,6 @@ namespace ManagedWin32
             return result;
         }
 
-        [SecurityCritical]
         void Initialize()
         {
             UseSpecialFolderRoot = true;
@@ -309,10 +295,7 @@ namespace ManagedWin32
                              | FolderBrowserOptions.ValidateResult;
         }
 
-        bool GetOption(FolderBrowserOptions option)
-        {
-            return ((_dialogOptions & option) != FolderBrowserOptions.None);
-        }
+        bool GetOption(FolderBrowserOptions option) => (_dialogOptions & option) != FolderBrowserOptions.None;
 
         void SetOption(FolderBrowserOptions option, bool value)
         {
@@ -360,7 +343,6 @@ namespace ManagedWin32
         public bool BrowseFiles
         {
             get { return GetOption(FolderBrowserOptions.BrowseFiles); }
-            [SecurityCritical]
             set { SetOption(FolderBrowserOptions.BrowseFiles, value); }
         }
 
@@ -370,7 +352,6 @@ namespace ManagedWin32
         public bool ShowEditBox
         {
             get { return GetOption(FolderBrowserOptions.ShowEditBox); }
-            [SecurityCritical]
             set { SetOption(FolderBrowserOptions.ShowEditBox, value); }
         }
 
@@ -380,7 +361,6 @@ namespace ManagedWin32
         public bool BrowseShares
         {
             get { return GetOption(FolderBrowserOptions.BrowseShares); }
-            [SecurityCritical]
             set { SetOption(FolderBrowserOptions.BrowseShares, value); }
         }
 
@@ -390,7 +370,6 @@ namespace ManagedWin32
         public bool ShowStatusText
         {
             get { return GetOption(FolderBrowserOptions.ShowStatusText); }
-            [SecurityCritical]
             set { SetOption(FolderBrowserOptions.ShowStatusText, value); }
         }
 
@@ -400,7 +379,6 @@ namespace ManagedWin32
         public bool ValidateResult
         {
             get { return GetOption(FolderBrowserOptions.ValidateResult); }
-            [SecurityCritical]
             set { SetOption(FolderBrowserOptions.ValidateResult, value); }
         }
         #endregion
