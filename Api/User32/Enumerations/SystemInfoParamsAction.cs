@@ -1,0 +1,91 @@
+﻿namespace ManagedWin32.Api
+{
+    public enum SystemInfoParamsAction
+    {
+        GetScreenSaverActive = 16,
+        SetScreenSaverActive = 17,
+        GetScreenSaverTimeout = 14,
+        SetScreenSaverTimeout = 15,
+        GetScreenSaverRunning = 114,
+
+        GETFONTSMOOTHING = 74,
+
+        GETDROPSHADOW = 0x1024,
+
+        GETFLATMENU = 0x1022,
+
+        GETFONTSMOOTHINGTYPE = 0x200a,
+
+        GETFONTSMOOTHINGCONTRAST = 0x200c,
+
+        ICONHORIZONTALSPACING = 13,
+
+        ICONVERTICALSPACING = 24,
+
+        GETICONTITLEWRAP = 25,
+
+        GETICONTITLELOGFONT = 31,
+
+        GETKEYBOARDCUES = 0x100a,
+
+        GETKEYBOARDDELAY = 22,
+
+        GETKEYBOARDPREF = 68,
+
+        GETKEYBOARDSPEED = 10,
+
+        GETMOUSEHOVERWIDTH = 98,
+
+        GETMOUSEHOVERHEIGHT = 100,
+
+        GETMOUSEHOVERTIME = 102,
+
+        GETMOUSESPEED = 112,
+
+        GETMENUDROPALIGNMENT = 27,
+
+        GETMENUFADE = 0x1012,
+
+        GETMENUSHOWDELAY = 106,
+
+        GETCOMBOBOXANIMATION = 0x1004,
+
+        GETGRADIENTCAPTIONS = 0x1008,
+
+        GETHOTTRACKING = 0x100e,
+
+        GETLISTBOXSMOOTHSCROLLING = 0x1006,
+
+        GETMENUANIMATION = 0x1002,
+
+        GETSELECTIONFADE = 0x1014,
+
+        GETTOOLTIPANIMATION = 0x1016,
+
+        GETUIEFFECTS = 0x103e,
+
+        GETACTIVEWINDOWTRACKING = 0x1000,
+
+        GETACTIVEWNDTRKTIMEOUT = 0x2002,
+
+        GETANIMATION = 72,
+
+        GETBORDER = 5,
+
+        GETCARETWIDTH = 0x2006,
+
+        GETDRAGFULLWINDOWS = 38,
+
+        GETNONCLIENTMETRICS = 41,
+
+        GETWORKAREA = 48,
+
+        GETHIGHCONTRAST = 66,
+
+        GETDEFAULTINPUTLANG = 89,
+
+        GETSNAPTODEFBUTTON = 95,
+
+        GETWHEELSCROLLLINES = 104
+    }
+}
