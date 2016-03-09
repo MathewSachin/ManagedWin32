@@ -1,6 +1,5 @@
 ﻿namespace ManagedWin32.Api
 {
-    // TODO: Rename enum members
     public enum DeviceCaps
     {
         /// <summary>
@@ -26,144 +25,175 @@
         /// <summary>
         /// Horizontal width in pixels
         /// </summary>
-        HORZRES = 8,
+        HorizontalResolution = 8,
+
         /// <summary>
         /// Vertical height in pixels
         /// </summary>
-        VERTRES = 10,
+        VerticalResolution = 10,
+
         /// <summary>
         /// Number of bits per pixel
         /// </summary>
-        BITSPIXEL = 12,
+        BitsPerPixel = 12,
+
         /// <summary>
         /// Number of planes
         /// </summary>
-        PLANES = 14,
+        Planes = 14,
+
         /// <summary>
         /// Number of brushes the device has
         /// </summary>
-        NUMBRUSHES = 16,
+        NumBrushes = 16,
+
         /// <summary>
         /// Number of pens the device has
         /// </summary>
-        NUMPENS = 18,
+        NumPens = 18,
+
         /// <summary>
         /// Number of markers the device has
         /// </summary>
-        NUMMARKERS = 20,
+        NumMarkers = 20,
+
         /// <summary>
         /// Number of fonts the device has
         /// </summary>
-        NUMFONTS = 22,
+        NumFonts = 22,
+
         /// <summary>
         /// Number of colors the device supports
         /// </summary>
-        NUMCOLORS = 24,
+        NumColors = 24,
+
         /// <summary>
         /// Size required for device descriptor
         /// </summary>
-        PDEVICESIZE = 26,
+        PDeviceSize = 26,
+
         /// <summary>
         /// Curve capabilities
         /// </summary>
-        CURVECAPS = 28,
+        CurveCaps = 28,
+
         /// <summary>
         /// Line capabilities
         /// </summary>
-        LINECAPS = 30,
+        LineCaps = 30,
+
         /// <summary>
         /// Polygonal capabilities
         /// </summary>
-        POLYGONALCAPS = 32,
+        PolygonCaps = 32,
+
         /// <summary>
         /// Text capabilities
         /// </summary>
-        TEXTCAPS = 34,
+        TextCaps = 34,
+
         /// <summary>
         /// Clipping capabilities
         /// </summary>
-        CLIPCAPS = 36,
+        ClipCaps = 36,
+
         /// <summary>
         /// Bitblt capabilities
         /// </summary>
-        RASTERCAPS = 38,
+        RasterCaps = 38,
+
         /// <summary>
         /// Length of the X leg
         /// </summary>
-        ASPECTX = 40,
+        AspectX = 40,
+
         /// <summary>
         /// Length of the Y leg
         /// </summary>
-        ASPECTY = 42,
+        AspectY = 42,
+
         /// <summary>
         /// Length of the hypotenuse
         /// </summary>
-        ASPECTXY = 44,
+        AspectXY = 44,
+
         /// <summary>
         /// Shading and Blending caps
         /// </summary>
-        SHADEBLENDCAPS = 45,
+        ShadeBlendCaps = 45,
 
         /// <summary>
         /// Logical pixels inch in X
         /// </summary>
-        LOGPIXELSX = 88,
+        LogicPixelsX = 88,
+
         /// <summary>
         /// Logical pixels inch in Y
         /// </summary>
-        LOGPIXELSY = 90,
+        LogicPixelsY = 90,
 
         /// <summary>
         /// Number of entries in physical palette
         /// </summary>
-        SIZEPALETTE = 104,
+        SizePallette = 104,
+
         /// <summary>
         /// Number of reserved entries in palette
         /// </summary>
-        NUMRESERVED = 106,
+        NumReserved = 106,
+
         /// <summary>
         /// Actual color resolution
         /// </summary>
-        COLORRES = 108,
+        ColorResolution = 108,
 
         // Printing related DeviceCaps. These replace the appropriate Escapes
         /// <summary>
         /// Physical Width in device units
         /// </summary>
-        PHYSICALWIDTH = 110,
+        PhysicalWidth = 110,
+
         /// <summary>
         /// Physical Height in device units
         /// </summary>
-        PHYSICALHEIGHT = 111,
+        PhysicalHeight = 111,
+
         /// <summary>
         /// Physical Printable Area x margin
         /// </summary>
-        PHYSICALOFFSETX = 112,
+        PhysicalOffsetX = 112,
+
         /// <summary>
         /// Physical Printable Area y margin
         /// </summary>
-        PHYSICALOFFSETY = 113,
+        PhysicalOffsetY = 113,
+
         /// <summary>
         /// Scaling factor x
         /// </summary>
-        SCALINGFACTORX = 114,
+        ScalingFactorX = 114,
+
         /// <summary>
         /// Scaling factor y
         /// </summary>
-        SCALINGFACTORY = 115,
+        ScalingFactorY = 115,
 
         /// <summary>
         /// Current vertical refresh rate of the display device (for displays only) in Hz
         /// </summary>
-        VREFRESH = 116,
+        VerticalRefreshRate = 116,
+
+        // TODO: Check Ambiguous
         /// <summary>
         /// Horizontal width of entire desktop in pixels
         /// </summary>
-        DESKTOPVERTRES = 117,
+        DesktopVerticalResolution = 117,
+
+        // TODO: Check Ambiguous
         /// <summary>
         /// Vertical height of entire desktop in pixels
         /// </summary>
-        DESKTOPHORZRES = 118,
+        DesktopHorizontalResolution = 118,
         /// <summary>
         /// Preferred blt alignment
         /// </summary>

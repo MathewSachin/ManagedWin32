@@ -11,7 +11,7 @@ namespace ManagedWin32
     /// Specifies various aspects of a keystroke. This member can be certain combinations of the following values.
     /// </summary>
     [Flags]
-    enum KeyboardFlag
+    public enum KeyboardFlag
     {
         /// <summary>
         /// KEYEVENTF_EXTENDEDKEY = 0x0001 (If specified, the scan code was preceded by a prefix byte that has the value 0xE0 (224).)
@@ -37,29 +37,29 @@ namespace ManagedWin32
     /// <summary>
     /// Specifies the type of the input event. This member can be one of the following values. 
     /// </summary>
-    enum InputType
+    public enum InputType
     {
         /// <summary>
         /// INPUT_MOUSE = 0x00 (The event is a mouse event. Use the mi structure of the union.)
         /// </summary>
-        Mouse = 0,
+        Mouse,
 
         /// <summary>
         /// INPUT_KEYBOARD = 0x01 (The event is a keyboard event. Use the ki structure of the union.)
         /// </summary>
-        Keyboard = 1,
+        Keyboard,
 
         /// <summary>
         /// INPUT_HARDWARE = 0x02 (Windows 95/98/Me: The event is from input hardware other than a keyboard or mouse. Use the hi structure of the union.)
         /// </summary>
-        Hardware = 2,
+        Hardware,
     }
 
     /// <summary>
-    /// The set of MouseFlags for use in the Flags property of the <see cref="MOUSEINPUT"/> structure. (See: http://msdn.microsoft.com/en-us/library/ms646273(VS.85).aspx)
+    /// The set of MouseFlags for use in the Flags property of the <see cref="MouseInput"/> structure. (See: http://msdn.microsoft.com/en-us/library/ms646273(VS.85).aspx)
     /// </summary>
     [Flags]
-    enum MouseFlag
+    public enum MouseFlag
     {
         /// <summary>
         /// Specifies that movement occurred.
@@ -206,15 +206,15 @@ namespace ManagedWin32
             var down =
                 new INPUT
                     {
-                        Type = (uint)InputType.Keyboard,
+                        Type = InputType.Keyboard,
                         Data =
                             {
                                 Keyboard =
-                                    new KEYBDINPUT
+                                    new KeyboardInput
                                         {
                                             KeyCode = (ushort)keyCode,
                                             Scan = 0,
-                                            Flags = IsExtendedKey(keyCode) ? (uint)KeyboardFlag.ExtendedKey : 0,
+                                            Flags = IsExtendedKey(keyCode) ? KeyboardFlag.ExtendedKey : 0,
                                             Time = 0,
                                             ExtraInfo = IntPtr.Zero
                                         }
@@ -233,17 +233,17 @@ namespace ManagedWin32
             var up =
                 new INPUT
                     {
-                        Type = (uint)InputType.Keyboard,
+                        Type = InputType.Keyboard,
                         Data =
                             {
                                 Keyboard =
-                                    new KEYBDINPUT
+                                    new KeyboardInput
                                         {
                                             KeyCode = (ushort)keyCode,
                                             Scan = 0,
-                                            Flags = (uint)(IsExtendedKey(keyCode)
-                                                                  ? KeyboardFlag.KeyUp | KeyboardFlag.ExtendedKey
-                                                                  : KeyboardFlag.KeyUp),
+                                            Flags = IsExtendedKey(keyCode)
+                                                    ? KeyboardFlag.KeyUp | KeyboardFlag.ExtendedKey
+                                                    : KeyboardFlag.KeyUp,
                                             Time = 0,
                                             ExtraInfo = IntPtr.Zero
                                         }
@@ -292,15 +292,15 @@ namespace ManagedWin32
 
             var down = new INPUT
                            {
-                               Type = (uint)InputType.Keyboard,
+                               Type = InputType.Keyboard,
                                Data =
                                    {
                                        Keyboard =
-                                           new KEYBDINPUT
+                                           new KeyboardInput
                                                {
                                                    KeyCode = 0,
                                                    Scan = scanCode,
-                                                   Flags = (uint)KeyboardFlag.Unicode,
+                                                   Flags = KeyboardFlag.Unicode,
                                                    Time = 0,
                                                    ExtraInfo = IntPtr.Zero
                                                }
@@ -309,15 +309,15 @@ namespace ManagedWin32
 
             var up = new INPUT
                          {
-                             Type = (uint)InputType.Keyboard,
+                             Type = InputType.Keyboard,
                              Data =
                                  {
                                      Keyboard =
-                                         new KEYBDINPUT
+                                         new KeyboardInput
                                              {
                                                  KeyCode = 0,
                                                  Scan = scanCode,
-                                                 Flags = (uint)(KeyboardFlag.KeyUp | KeyboardFlag.Unicode),
+                                                 Flags = KeyboardFlag.KeyUp | KeyboardFlag.Unicode,
                                                  Time = 0,
                                                  ExtraInfo = IntPtr.Zero
                                              }
@@ -329,8 +329,8 @@ namespace ManagedWin32
             // we need to include the KEYEVENTF_EXTENDEDKEY flag in the Flags property. 
             if ((scanCode & 0xFF00) == 0xE000)
             {
-                down.Data.Keyboard.Flags |= (uint)KeyboardFlag.ExtendedKey;
-                up.Data.Keyboard.Flags |= (uint)KeyboardFlag.ExtendedKey;
+                down.Data.Keyboard.Flags |= KeyboardFlag.ExtendedKey;
+                up.Data.Keyboard.Flags |= KeyboardFlag.ExtendedKey;
             }
 
             InputList.Add(down);
@@ -356,8 +356,8 @@ namespace ManagedWin32
         /// </summary>     
         public void AddRelativeMouseMovement(int x, int y)
         {
-            var movement = new INPUT { Type = (uint)InputType.Mouse };
-            movement.Data.Mouse.Flags = (uint)MouseFlag.Move;
+            var movement = new INPUT { Type = InputType.Mouse };
+            movement.Data.Mouse.Flags = MouseFlag.Move;
             movement.Data.Mouse.X = x;
             movement.Data.Mouse.Y = y;
 
@@ -369,8 +369,8 @@ namespace ManagedWin32
         /// </summary>        
         public void AddAbsoluteMouseMovement(int absoluteX, int absoluteY)
         {
-            var movement = new INPUT { Type = (uint)InputType.Mouse };
-            movement.Data.Mouse.Flags = (uint)(MouseFlag.Move | MouseFlag.Absolute);
+            var movement = new INPUT { Type = InputType.Mouse };
+            movement.Data.Mouse.Flags = MouseFlag.Move | MouseFlag.Absolute;
             movement.Data.Mouse.X = absoluteX;
             movement.Data.Mouse.Y = absoluteY;
 
@@ -382,8 +382,8 @@ namespace ManagedWin32
         /// </summary>
         public void AddAbsoluteMouseMovementOnVirtualDesktop(int absoluteX, int absoluteY)
         {
-            var movement = new INPUT { Type = (uint)InputType.Mouse };
-            movement.Data.Mouse.Flags = (uint)(MouseFlag.Move | MouseFlag.Absolute | MouseFlag.VirtualDesk);
+            var movement = new INPUT { Type = InputType.Mouse };
+            movement.Data.Mouse.Flags = MouseFlag.Move | MouseFlag.Absolute | MouseFlag.VirtualDesk;
             movement.Data.Mouse.X = absoluteX;
             movement.Data.Mouse.Y = absoluteY;
 
@@ -397,7 +397,7 @@ namespace ManagedWin32
         /// </summary>
         public void AddMouseButtonDown(MouseButton button)
         {
-            var buttonDown = new INPUT { Type = (uint)InputType.Mouse };
+            var buttonDown = new INPUT { Type = InputType.Mouse };
 
             MouseFlag flg;
 
@@ -417,7 +417,7 @@ namespace ManagedWin32
                     break;
             };
 
-            buttonDown.Data.Mouse.Flags = (uint)flg;
+            buttonDown.Data.Mouse.Flags = flg;
 
             InputList.Add(buttonDown);
         }
@@ -427,8 +427,8 @@ namespace ManagedWin32
         /// </summary>
         public void AddMouseXButtonDown(int xButtonId)
         {
-            var buttonDown = new INPUT { Type = (uint)InputType.Mouse };
-            buttonDown.Data.Mouse.Flags = (uint)MouseFlag.XDown;
+            var buttonDown = new INPUT { Type = InputType.Mouse };
+            buttonDown.Data.Mouse.Flags = MouseFlag.XDown;
             buttonDown.Data.Mouse.MouseData = (uint)xButtonId;
             InputList.Add(buttonDown);
         }
@@ -458,7 +458,7 @@ namespace ManagedWin32
                     break;
             }
 
-            buttonUp.Data.Mouse.Flags = (uint)(flg);
+            buttonUp.Data.Mouse.Flags = flg;
             InputList.Add(buttonUp);
         }
 
@@ -467,8 +467,8 @@ namespace ManagedWin32
         /// </summary>
         public void AddMouseXButtonUp(int xButtonId)
         {
-            var buttonUp = new INPUT { Type = (uint)InputType.Mouse };
-            buttonUp.Data.Mouse.Flags = (uint)MouseFlag.XUp;
+            var buttonUp = new INPUT { Type = InputType.Mouse };
+            buttonUp.Data.Mouse.Flags = MouseFlag.XUp;
             buttonUp.Data.Mouse.MouseData = (uint)xButtonId;
             InputList.Add(buttonUp);
         }
@@ -518,8 +518,8 @@ namespace ManagedWin32
         /// </summary>
         public void AddMouseVerticalWheelScroll(int scrollAmount)
         {
-            var scroll = new INPUT { Type = (uint)InputType.Mouse };
-            scroll.Data.Mouse.Flags = (uint)MouseFlag.VerticalWheel;
+            var scroll = new INPUT { Type = InputType.Mouse };
+            scroll.Data.Mouse.Flags = MouseFlag.VerticalWheel;
             scroll.Data.Mouse.MouseData = (uint)scrollAmount;
 
             InputList.Add(scroll);
@@ -530,8 +530,8 @@ namespace ManagedWin32
         /// </summary>
         public void AddMouseHorizontalWheelScroll(int scrollAmount)
         {
-            var scroll = new INPUT { Type = (uint)InputType.Mouse };
-            scroll.Data.Mouse.Flags = (uint)MouseFlag.HorizontalWheel;
+            var scroll = new INPUT { Type = InputType.Mouse };
+            scroll.Data.Mouse.Flags = MouseFlag.HorizontalWheel;
             scroll.Data.Mouse.MouseData = (uint)scrollAmount;
 
             InputList.Add(scroll);

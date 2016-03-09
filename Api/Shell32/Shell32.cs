@@ -27,6 +27,7 @@ namespace ManagedWin32.Api
         public static extern int ExtractIconEx(string sFile, int iIndex, out IntPtr piLargeVersion, out IntPtr piSmallVersion, int amountIcons);
 
         // TODO: Check HandleRef
+        [Obsolete("Use System.Drawing.ExtractAssociatedIcon instead.")]
         [DllImport(DllName)]
         public static extern IntPtr ExtractAssociatedIcon(HandleRef hInst, StringBuilder iconPath, ref int index);
     }

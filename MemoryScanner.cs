@@ -63,7 +63,7 @@ namespace ManagedWin32
         {
             Cancel();
 
-            thread = new Thread(new ParameterizedThreadStart((o) => Scanner(Value)));
+            thread = new Thread(() => Scanner(Value));
 
             thread.Start();
         }
@@ -377,7 +377,7 @@ namespace ManagedWin32
 
             public T Value { get; internal set; }
 
-            public Type Type { get { return typeof(T); } }
+            public Type Type => typeof(T);
         }
      
         //List of memoryRecords to hold the addresses and their related information.

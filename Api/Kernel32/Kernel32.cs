@@ -31,6 +31,9 @@ namespace ManagedWin32.Api
             string lpCurrentDirectory, ref StartUpInfo lpStartupInfo, ref ProcessInfo lpProcessInformation);
 
         [DllImport(DllName)]
+        public static extern bool Beep(int Frequency, int Duration);
+
+        [DllImport(DllName)]
         public static extern int GetThreadId(IntPtr thread);
 
         [DllImport(DllName)]
@@ -48,25 +51,29 @@ namespace ManagedWin32.Api
         [DllImport(DllName, SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern int QueryDosDevice(string lpDeviceName, StringBuilder lpTargetPath, int ucchMax);
 
-        // TODO: Check Validity
+        // TODO: Check Validity EntryPoint
         [DllImport(DllName)]
-        public unsafe static extern void CopyMemory(void* dest, void* src, int length);
+        public static extern void CopyMemory(IntPtr dest, IntPtr src, int length);
 
         // TODO: Check Validity
         [DllImport(DllName, EntryPoint = "RtlMoveMemory")]
         public unsafe static extern void CopyMemory(RGBQuad* dest, byte* src, int cb);
 
+        [Obsolete("Use System.IO.File.Copy instead.")]
         [DllImport(DllName)]
         public static extern bool CopyFile(string src, string dst, bool failIfExists);
 
+        [Obsolete("Use System.IO.File.Delete instead.")]
         [DllImport(DllName)]
         public static extern bool DeleteFile(string path);
 
+        [Obsolete("Use System.Environment.ExpandEnvironmentVariables instead.")]
         [DllImport(DllName)]
-        internal static extern int ExpandEnvironmentStrings(string lpSrc, [Out] StringBuilder lpDst, int nSize);
+        public static extern int ExpandEnvironmentStrings(string lpSrc, [Out] StringBuilder lpDst, int nSize);
 
+        [Obsolete("Use System.Environment.MachineName instead.")]
         [DllImport(DllName)]
-        internal static extern int GetComputerName([Out] StringBuilder nameBuffer, ref int bufferSize);
+        public static extern int GetComputerName([Out] StringBuilder nameBuffer, ref int bufferSize);
 
         [DllImport(DllName)]
         public static extern uint GetCurrentProcessId();
@@ -80,36 +87,44 @@ namespace ManagedWin32.Api
         [DllImport(DllName)]
         public static extern int GetDriveType(string drive);
 
+        [Obsolete("Use System.Environment.GetEnvironmentVariable instead.")]
         [DllImport(DllName)]
-        internal static extern int GetEnvironmentVariable(string lpName, [Out] StringBuilder lpValue, int size);
+        public static extern int GetEnvironmentVariable(string lpName, [Out] StringBuilder lpValue, int size);
 
+        [Obsolete("Use System.Environment.GetLogicalDrives instead.")]
         [DllImport(DllName)]
         public static extern int GetLogicalDrives();
 
+        [Obsolete("Use System.Environment.SystemDirectory instead.")]
         [DllImport(DllName)]
-        internal static extern int GetSystemDirectory([Out] StringBuilder sb, int length);
+        public static extern int GetSystemDirectory([Out] StringBuilder sb, int length);
 
+        [Obsolete("Use System.IO.Path.GetTempFileName instead.")]
         [DllImport(DllName)]
-        internal static extern uint GetTempFileName(string tmpPath, string prefix, uint uniqueIdOrZero, [Out] StringBuilder tmpFileName);
+        public static extern uint GetTempFileName(string tmpPath, string prefix, uint uniqueIdOrZero, [Out] StringBuilder tmpFileName);
 
+        [Obsolete("Use System.IO.Path.GetTempPath instead.")]
         [DllImport(DllName)]
-        internal static extern uint GetTempPath(int bufferLen, [Out] StringBuilder buffer);
+        public static extern uint GetTempPath(int bufferLen, [Out] StringBuilder buffer);
 
         [DllImport(DllName)]
         public static extern bool IsWow64Process([In] IntPtr hSourceProcessHandle, out bool isWow64);
 
+        [Obsolete("Use System.IO.File.Move instead.")]
         [DllImport(DllName)]
         public static extern bool MoveFile(string src, string dst);
 
         [DllImport(DllName)]
         internal static extern int GetWindowsDirectory([Out] StringBuilder sb, int length);
 
+        [Obsolete("Use System.IO.Directory.Delete instead.")]
         [DllImport(DllName)]
         public static extern bool RemoveDirectory(string path);
 
         [DllImport(DllName, EntryPoint = "RtlZeroMemory")]
         public static extern void ZeroMemory(IntPtr address, UIntPtr length);
 
+        [Obsolete("Use System.Environment.SetEnvironmentVariable instead.")]
         [DllImport(DllName)]
         public static extern bool SetEnvironmentVariable(string lpName, string lpValue);
 

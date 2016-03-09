@@ -47,8 +47,8 @@
     <Compile Include="Api\DWMApi\Enumerations\DWMWindowAttribute.cs" />
     <Compile Include="Api\DWMApi\Structures\DWMBlurBehind.cs" />
     <Compile Include="Api\DWMApi\Structures\DWMThumbnailProperties.cs" />
-    <Compile Include="Api\Icon Structs.cs" />
-    <Compile Include="Api\RECT.cs" />
+    <Compile Include="Api\Kernel32\Structures\Icon Structs.cs" />
+    <Compile Include="Api\Gdi32\RECT.cs" />
     <Compile Include="Api\User32\Delegates\EnumDesktopProc.cs" />
     <Compile Include="Api\User32\Delegates\EnumDesktopWIndowsProc.cs" />
     <Compile Include="Api\User32\Delegates\EnumWindowsProc.cs" />
@@ -122,7 +122,7 @@
     <Compile Include="Api\User32\Structures\BitmapInfoHeader.cs" />
     <Compile Include="Api\User32\Structures\BitmapInfo.cs" />
     <Compile Include="Api\User32\Structures\FlashWindowInfo.cs" />
-    <Compile Include="Api\User32\Structures\Structures.cs" />
+    <Compile Include="Api\User32\Structures\Input Structures.cs" />
     <Compile Include="Api\User32\Enumerations\LoadImageTypes.cs" />
     <Compile Include="Api\User32\Enumerations\LookupIconIdFromDirectoryExFlags.cs" />
     <Compile Include="Api\User32\User32.cs" />

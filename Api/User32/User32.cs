@@ -250,11 +250,9 @@ namespace ManagedWin32.Api
         }
         #endregion
 
+        [Obsolete("Use System.Media.SystemSounds instead")]
         [DllImport(DllName, CharSet = CharSet.Auto, ExactSpelling = true, EntryPoint = "MessageBeep")]
         public static extern bool Play(BeepType BeepType);
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool Beep(int Frequency, int Duration);
 
         [DllImport(DllName)]
         public static extern bool GetCursorInfo(out CursorInfo pci);
@@ -366,110 +364,109 @@ namespace ManagedWin32.Api
         [DllImport(DllName)]
         public static extern bool BringWindowToTop(IntPtr hWnd);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern int SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern int ShowWindow(IntPtr hWnd, ShowWindowFlags nCmdShow);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern uint GetSysColor(int nIndex);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetWindowPlacement(IntPtr hWnd, ref WindowPlacement lpwndpl);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool SetWindowPlacement(IntPtr hWnd, [In] ref WindowPlacement lpwndpl);
 
         [DllImport(DllName, CharSet = CharSet.Unicode, SetLastError = true)]
         public extern static int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern IntPtr GetClassLong(IntPtr hWnd, int nIndex);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern IntPtr GetClassLongPtr(IntPtr hWnd, int nIndex);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool PrintWindow(IntPtr hwnd, IntPtr hDC, uint nFlags);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public extern static int SendMessage(IntPtr hWnd, int wMsg, IntPtr wParam, IntPtr lParam);
 
-        [DllImport(DllName, SetLastError = true, EntryPoint = "SendMessageA")]
+        [DllImport(DllName, EntryPoint = "SendMessageA")]
         public static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public extern static uint GetWindowLong(IntPtr hwnd, int index);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public extern static uint GetWindowLongPtr(IntPtr hwnd, int nIndex);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern int SetWindowLong(IntPtr hWnd, int index, int styleFlags);
 
-        [DllImport(DllName, SetLastError = true, EntryPoint = "SetWindowLongPtr")]
+        [DllImport(DllName, EntryPoint = "SetWindowLongPtr")]
         public static extern IntPtr SetWindowLongPtr(IntPtr hWnd, int index, IntPtr styleFlags);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern IntPtr MonitorFromRect([In] ref RECT lprc, uint dwFlags);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetWindowInfo(IntPtr hwnd, ref WindowInfo pwi);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public extern static int EnumWindows(EnumWindowsProc lpEnumFunc, int lParam);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public extern static int EnumChildWindows(IntPtr hWndParent, EnumWindowsProc lpEnumFunc, int lParam);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool GetScrollInfo(IntPtr hwnd, int fnBar, ref ScrollInfo lpsi);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool ShowScrollBar(IntPtr hwnd, ScrollBarDirection scrollBar, bool show);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern int SetScrollPos(IntPtr hWnd, Orientation nBar, int nPos, bool bRedraw);
 
-        [DllImport(DllName, SetLastError = true, EntryPoint = "PostMessageA")]
+        [DllImport(DllName, EntryPoint = "PostMessageA")]
         public static extern bool PostMessage(IntPtr hWnd, uint msg, int wParam, int lParam);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern RegionResult GetWindowRgn(IntPtr hWnd, SafeHandle hRgn);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern IntPtr GetTopWindow(IntPtr hWnd);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern void ReleaseDC(IntPtr dc);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern IntPtr GetClipboardOwner();
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern IntPtr SetClipboardViewer(IntPtr hWndNewViewer);
 
-        [DllImport(DllName, SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport(DllName, CharSet = CharSet.Auto)]
         public static extern bool ChangeClipboardChain(IntPtr hWndRemove, IntPtr hWndNewNext);
 
-        // Added for WinEventHook logic, Greenshot 1.2
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern IntPtr SetWinEventHook(WinEvent eventMin, WinEvent eventMax, IntPtr hmodWinEventProc, WinEventDelegate lpfnWinEventProc, int idProcess, int idThread, WinEventHookFlags dwFlags);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
 
         /// uiFlags: 0 - Count of GDI objects
@@ -479,23 +476,23 @@ namespace ManagedWin32.Api
         ///	- 	WIN32 resources (accelerator tables, bitmap resources, dialog box templates, font resources, menu resources, raw data resources, string table entries, message table entries, cursors/icons)
         /// - Other USER objects (windows, menus)
         ///
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern uint GetGuiResources(IntPtr hProcess, uint uiFlags);
 
-        [DllImport(DllName, SetLastError = true, CharSet = CharSet.Auto)]
+        [DllImport(DllName)]
         public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam, SendMessageTimeoutFlags fuFlags, uint uTimeout, out UIntPtr lpdwResult);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern int MapWindowPoints(IntPtr hwndFrom, IntPtr hwndTo, ref Point lpPoints, [MarshalAs(UnmanagedType.U4)] int cPoints);
         
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern IntPtr SetCapture(IntPtr hWnd);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool ReleaseCapture();
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern IntPtr CreateIconIndirect(ref IconInfo icon);
 
         [DllImport(DllName)]
@@ -525,9 +522,6 @@ namespace ManagedWin32.Api
         [DllImport(DllName)]
         public static extern bool GetClientRect(IntPtr hWnd, out RECT lpRect);
 
-        [DllImport("gdi32.dll")]
-        public static extern uint GetPixel(IntPtr hdc, int nXPos, int nYPos);
-
         [DllImport(DllName, CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
         public static extern short GetKeyState(KeyCode Keycode);
                 
@@ -549,7 +543,7 @@ namespace ManagedWin32.Api
         [DllImport(DllName)]
         public static extern IntPtr SetActiveWindow(IntPtr hWnd);
         
-        [DllImport(DllName, ExactSpelling = true)]
+        [DllImport(DllName)]
         public static extern bool UpdateLayeredWindow(IntPtr hwnd, IntPtr hdcDst, ref Point pptDst, ref Size psize, IntPtr hdcSrc, ref Point pptSrc, uint crKey, [In] ref BlendFunction pblend, uint dwFlags);
                 
         [DllImport(DllName)]

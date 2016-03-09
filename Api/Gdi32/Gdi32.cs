@@ -44,7 +44,7 @@ namespace ManagedWin32.Api
         public static extern IntPtr CreateRectRgn(int nLeftRect, int nTopRect, int nRightRect, int nBottomRect);
 
         [DllImport(DllName)]
-        public static extern uint GetPixel(SafeHandle hdc, int nXPos, int nYPos);
+        public static extern uint GetPixel(IntPtr hdc, int nXPos, int nYPos);
 
         [DllImport(DllName)]
         public static extern int GetDeviceCaps(SafeHandle hdc, DeviceCaps nIndex);

@@ -25,12 +25,13 @@ namespace ManagedWin32.Api
         [DllImport(DllName)]
         static extern bool GetUserName([Out] StringBuilder lpBuffer, ref int nSize);
 
+        [Obsolete("Use System.Environment.UserName instead.")]
         public static string UserName
         {
             get
             {
                 int Size = 256;
-                StringBuilder sb = new StringBuilder(256);
+                var sb = new StringBuilder(Size);
                 GetUserName(sb, ref Size);
                 return sb.ToString(0, Size);
             }
