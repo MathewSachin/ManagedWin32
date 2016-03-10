@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Text;
 
-// Check info about [Out] StringBuilder
+// Check info about [Out] StringBuilder and [In] ref T
 
 namespace ManagedWin32.Api
 {
@@ -76,10 +76,14 @@ namespace ManagedWin32.Api
         public static extern int GetComputerName([Out] StringBuilder nameBuffer, ref int bufferSize);
 
         [DllImport(DllName)]
-        public static extern uint GetCurrentProcessId();
+        static extern uint GetCurrentProcessId();
+
+        public static uint CurrentProcessId => GetCurrentProcessId();
 
         [DllImport(DllName)]
-        public static extern IntPtr GetCurrentThread();
+        static extern IntPtr GetCurrentThread();
+
+        public static IntPtr CurrentThread => GetCurrentThread();
 
         [DllImport(DllName)]
         public static extern bool GetDiskFreeSpaceEx(string drive, out long freeBytesForUser, out long totalBytes, out long freeBytes);
@@ -108,7 +112,7 @@ namespace ManagedWin32.Api
         public static extern uint GetTempPath(int bufferLen, [Out] StringBuilder buffer);
 
         [DllImport(DllName)]
-        public static extern bool IsWow64Process([In] IntPtr hSourceProcessHandle, out bool isWow64);
+        public static extern bool IsWow64Process(IntPtr hSourceProcessHandle, out bool isWow64);
 
         [Obsolete("Use System.IO.File.Move instead.")]
         [DllImport(DllName)]
@@ -141,16 +145,16 @@ namespace ManagedWin32.Api
         public static extern bool UpdateResource(IntPtr hUpdate, ResourceType lpType, uint lpName, ushort wLanguage, byte[] lpData, uint cbData);
 
         [DllImport(DllName)]
-        public static extern IntPtr LoadLibrary(string dllToLoad);
+        public static extern IntPtr LoadLibrary(string path);
+
+        [DllImport(DllName, EntryPoint = "LoadLibraryEx")]
+        public static extern IntPtr LoadLibrary(string path, IntPtr hFile, LoadLibraryFlags flags);
 
         [DllImport(DllName)]
         public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
 
         [DllImport(DllName)]
         public static extern bool FreeLibrary(IntPtr hModule);
-
-        [DllImport(DllName)]
-        public static extern IntPtr LoadLibraryEx(string path, IntPtr hFile, LoadLibraryFlags flags);
 
         [DllImport(DllName)]
         public static extern IntPtr FindResource(IntPtr hModule, IntPtr resourceID, ResourceType type);

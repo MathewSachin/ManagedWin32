@@ -14,7 +14,7 @@ namespace ManagedWin32
             AdvApi32.LookupPrivilegeValue(null, "SeShutdownPrivilege", ref tp.Luid);
             AdvApi32.AdjustTokenPrivileges(htok, false, ref tp, 0, IntPtr.Zero, IntPtr.Zero);
 
-            User32.ExitWindowsEx(Flags, 0);
+            User32.ExitWindows(Flags, 0);
         }
     }
 }

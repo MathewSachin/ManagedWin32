@@ -12,13 +12,10 @@ namespace ManagedWin32.Api
 
         public RECT(int Left, int Top, int Right, int Bottom)
         {
-            this = new RECT()
-            {
-                Left = Left,
-                Top = Top,
-                Right = Right,
-                Bottom = Bottom
-            };
+            this.Left = Left;
+            this.Top = Top;
+            this.Right = Right;
+            this.Bottom = Bottom;
         }
     }
 }

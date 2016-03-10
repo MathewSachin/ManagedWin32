@@ -38,6 +38,7 @@ namespace ManagedWin32.Api
         }
         #endregion
 
+        [Obsolete("Use System.Environment.DomainName instead.")]
         [DllImport("secur32.dll", CharSet = CharSet.Unicode)]
         public static extern byte GetUserNameEx(int format, [Out] StringBuilder domainName, ref uint domainNameLen);
     }

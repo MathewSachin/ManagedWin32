@@ -3,16 +3,16 @@
 namespace ManagedWin32.Api
 {
     [Flags]
-    public enum ThreadAccess : int
+    public enum ThreadAccess
     {
-        TERMINATE = (0x0001),
-        SUSPEND_RESUME = (0x0002),
-        GET_CONTEXT = (0x0008),
-        SET_CONTEXT = (0x0010),
-        SET_INFORMATION = (0x0020),
-        QUERY_INFORMATION = (0x0040),
-        SET_THREAD_TOKEN = (0x0080),
-        IMPERSONATE = (0x0100),
-        DIRECT_IMPERSONATION = (0x0200)
+        Terminate = 0x0001,
+        SuspendResume = 0x0002,
+        GetContext = 0x0008,
+        SetContext = 0x0010,
+        SetInfo = 0x0020,
+        QueryInfo = 0x0040,
+        SetThreadToken = 0x0080,
+        Impersonate = 0x0100,
+        DirectImpersonation = 0x0200
     }
 }

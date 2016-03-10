@@ -9,18 +9,18 @@ namespace ManagedWin32.Api
         /// <summary>
         /// Flags that indicates the given parameters
         /// </summary>
-        public DWMBlurbehindFlags dwFlags;
+        public DWMBlurbehindFlags Flags;
         
         /// <summary>
         /// True if the transparency is enabled
         /// </summary>
-        public bool fEnable;
+        public bool Enable;
         
         /// <summary>
-        /// Region
+        /// Region to blur
         /// </summary>
-        public IntPtr hRgnBlur;
+        public IntPtr Region;
         
-        public bool fTransitionOnMaximized;
+        public bool TransitionOnMaximized;
     }
 }

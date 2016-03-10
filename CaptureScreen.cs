@@ -10,16 +10,17 @@ namespace ManagedWin32
         public static Bitmap CaptureDesktop()
         {
             IntPtr hDC = User32.GetWindowDC(IntPtr.Zero),
-                hMemDC = Gdi32.CreateCompatibleDC(hDC),
-                hBitmap = Gdi32.CreateCompatibleBitmap(hDC, SystemParams.ScreenWidth, SystemParams.ScreenHeight);
+                   hMemDC = Gdi32.CreateCompatibleDC(hDC),
+                   hBitmap = Gdi32.CreateCompatibleBitmap(hDC, SystemParams.ScreenWidth, SystemParams.ScreenHeight);
 
             if (hBitmap != IntPtr.Zero)
             {
-                IntPtr hOld = Gdi32.SelectObject(hMemDC, hBitmap);
+                var hOld = Gdi32.SelectObject(hMemDC, hBitmap);
 
                 Gdi32.BitBlt(hMemDC, 0, 0, SystemParams.ScreenWidth, SystemParams.ScreenHeight, hDC, 0, 0, CopyPixelOperation.SourceCopy);
 
                 Gdi32.SelectObject(hMemDC, hOld);
+
                 return Bitmap.FromHbitmap(hBitmap);
             }
             return null;
@@ -27,9 +28,9 @@ namespace ManagedWin32
 
         public static Bitmap CaptureCursor(ref int x, ref int y)
         {
-            Bitmap bmp;
             IntPtr hicon;
-            CursorInfo ci = new CursorInfo() { cbSize = Marshal.SizeOf(typeof(CursorInfo)) };
+
+            var ci = new CursorInfo() { cbSize = Marshal.SizeOf(typeof(CursorInfo)) };
 
             IconInfo icInfo;
 
@@ -38,14 +39,13 @@ namespace ManagedWin32
                 if (ci.flags == User32.CURSOR_SHOWING)
                 {
                     hicon = User32.CopyIcon(ci.hCursor);
+
                     if (User32.GetIconInfo(hicon, out icInfo))
                     {
                         x = ci.ptScreenPos.X - ((int)icInfo.xHotspot);
                         y = ci.ptScreenPos.Y - ((int)icInfo.yHotspot);
 
-                        Icon ic = Icon.FromHandle(hicon);
-                        bmp = ic.ToBitmap();
-                        return bmp;
+                        return Icon.FromHandle(hicon).ToBitmap();
                     }
                 }
             }

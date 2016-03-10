@@ -2,5 +2,5 @@
 
 namespace ManagedWin32.Api
 {
-    public delegate int EnumResTypeProc(IntPtr hModule, IntPtr lpszType, IntPtr lParam);
+    public delegate int EnumResTypeProc(IntPtr hModule, IntPtr ResType, IntPtr Param);
 }

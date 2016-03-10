@@ -13,9 +13,9 @@ namespace ManagedWin32.Api
             int nInputBufferSize, ref SystemPowerCapablities lpOutputBuffer, int nOutputBufferSize);
 
         [DllImport(DllName)]
-        public static extern PowerPlatformRole PowerDeterminePlatformRole();
-
-        public static bool IsLaptop => PowerDeterminePlatformRole() == PowerPlatformRole.Mobile;
+        static extern PowerPlatformRole PowerDeterminePlatformRole();
+        
+        public static PowerPlatformRole PowerPlatformRole => PowerDeterminePlatformRole();
 
         /// <summary>
         /// Full call to method PowerSettingAccessCheck().
@@ -27,28 +27,28 @@ namespace ManagedWin32.Api
         public static extern int PowerSettingAccessCheck(PowerDataAccessor AccessFlags, [MarshalAs(UnmanagedType.LPStruct)] Guid PowerGuid);
 
         [DllImport(DllName)]
-        static extern int PowerReadACValueIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, ref int Value);
+        public static extern int PowerReadACValueIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, ref int Value);
 
         [DllImport(DllName)]
-        static extern int PowerReadDCValueIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, ref int Value);
+        public static extern int PowerReadDCValueIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, ref int Value);
 
         [DllImport(DllName)]
-        static extern int PowerReadACDefaultIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, ref int Value);
+        public static extern int PowerReadACDefaultIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, ref int Value);
 
         [DllImport(DllName)]
-        static extern int PowerReadDCDefaultIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, ref int Value);
+        public static extern int PowerReadDCDefaultIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, ref int Value);
 
         [DllImport(DllName)]
-        static extern int PowerWriteACValueIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, int AcValueIndex);
+        public static extern int PowerWriteACValueIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, int AcValueIndex);
 
         [DllImport(DllName)]
-        static extern int PowerWriteDCValueIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, int AcValueIndex);
+        public static extern int PowerWriteDCValueIndex(int RootPowerKey, ref Guid SchemeGuid, ref Guid SubGroupOfPowerSettingsGuid, ref Guid PowerSettingGuid, int AcValueIndex);
         
         [DllImport(DllName)]
-        static extern int PowerGetActiveScheme(int UserRootPowerKey, ref IntPtr ActivePolicyGuid);
+        public static extern int PowerGetActiveScheme(int UserRootPowerKey, ref IntPtr ActivePolicyGuid);
 
         [DllImport(DllName)]
-        static extern int PowerSetActiveScheme(int UserRootPowerKey, ref Guid SchemeGuid);
+        public static extern int PowerSetActiveScheme(int UserRootPowerKey, ref Guid SchemeGuid);
 
         [DllImport(DllName)]
         public static extern int PowerEnumerate(int RootPowerKey, IntPtr SchemeGuid, IntPtr SubGroupOfPowerSettingGuid,
@@ -124,10 +124,10 @@ namespace ManagedWin32.Api
                 Guid Buffer = new Guid(),
                      BalancedGuid = new Guid();
 
-                int SchemeIndex = 0;
-                int BufferSize = (int)Marshal.SizeOf(typeof(Guid));
+                int SchemeIndex = 0,
+                    BufferSize = (int)Marshal.SizeOf(typeof(Guid));
 
-                while (0 == PowerEnumerate(0, IntPtr.Zero, IntPtr.Zero, 16, SchemeIndex, ref Buffer, ref BufferSize))
+                while (PowerEnumerate(0, IntPtr.Zero, IntPtr.Zero, 16, SchemeIndex, ref Buffer, ref BufferSize) == 0)
                 {
                     int ACvalue = 0,
                         DCvalue = 0;
@@ -135,9 +135,12 @@ namespace ManagedWin32.Api
                     ReadPowerSetting(true, ref Buffer, ref subgroup, ref setting, ref ACvalue);
                     ReadPowerSetting(false, ref Buffer, ref subgroup, ref setting, ref DCvalue);
 
-                    if ((2 == ACvalue) && (2 == DCvalue)) BalancedGuid = Buffer;
+                    if (ACvalue == 2 && DCvalue == 2)
+                        BalancedGuid = Buffer;
+
                     SchemeIndex++;
                 }
+
                 return BalancedGuid;
             }
         }
@@ -162,8 +165,8 @@ namespace ManagedWin32.Api
         {
             get
             {
-                SystemPowerCapablities powercapabilityes = new SystemPowerCapablities();
-                int result = CallNtPowerInformation(4, IntPtr.Zero, 0, ref powercapabilityes, (int)Marshal.SizeOf(new SystemPowerCapablities()));
+                var powercapabilityes = new SystemPowerCapablities();
+                int result = CallNtPowerInformation(4, IntPtr.Zero, 0, ref powercapabilityes, (int)Marshal.SizeOf(powercapabilityes));
                 if (result != 0) return false;
 
                 return powercapabilityes.VideoDimPresent == 1;

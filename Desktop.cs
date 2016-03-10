@@ -175,23 +175,25 @@ namespace ManagedWin32
             CheckDisposed();
 
             // make sure a desktop is open.
-            if (!IsOpen) return null;
+            if (!IsOpen)
+                return null;
 
             // set startup parameters.
-            StartUpInfo si = new StartUpInfo();
+            var si = new StartUpInfo();
             si.cb = Marshal.SizeOf(si);
             si.lpDesktop = DesktopName;
 
-            ProcessInfo pi = new ProcessInfo();
+            var pi = new ProcessInfo();
 
             // start the process.
             bool result = Kernel32.CreateProcess(null, path, IntPtr.Zero, IntPtr.Zero, true, NORMAL_PRIORITY_CLASS, IntPtr.Zero, null, ref si, ref pi);
 
             // error?
-            if (!result) return null;
+            if (!result)
+                return null;
 
             // Get the process.
-            return Process.GetProcessById(pi.dwProcessId);
+            return Process.GetProcessById(pi.ProcessId);
         }
 
         /// <summary>

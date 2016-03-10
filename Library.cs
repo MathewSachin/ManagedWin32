@@ -39,7 +39,7 @@ namespace ManagedWin32
         public Library(string Path) : this(Kernel32.LoadLibrary(Path)) { FileName = Path; }
 
         public Library(string Path, LoadLibraryFlags Flags)
-            : this(Kernel32.LoadLibraryEx(Path, IntPtr.Zero, Flags)) { FileName = Path; }
+            : this(Kernel32.LoadLibrary(Path, IntPtr.Zero, Flags)) { FileName = Path; }
 
         public void Dispose()
         {

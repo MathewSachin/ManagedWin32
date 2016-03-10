@@ -55,13 +55,13 @@ namespace ManagedWin32.Api
         public static extern IntPtr GetThreadDesktop(int dwThreadId);
         #endregion
 
-        [DllImport(DllName, SetLastError = true, ExactSpelling = true)]
+        [DllImport(DllName)]
         public static extern int LookupIconIdFromDirectory(IntPtr presbits, bool fIcon);
 
-        [DllImport(DllName, SetLastError = true, ExactSpelling = true)]
-        public static extern int LookupIconIdFromDirectoryEx(IntPtr presbits, bool fIcon, int cxDesired, int cyDesired, LookupIconIdFromDirectoryExFlags Flags);
+        [DllImport(DllName, EntryPoint = "LookupIconIdFromDirectoryEx")]
+        public static extern int LookupIconIdFromDirectory(IntPtr presbits, bool fIcon, int cxDesired, int cyDesired, LookupIconIdFromDirectoryExFlags Flags);
 
-        [DllImport(DllName, EntryPoint = "LoadImageW", SetLastError = true, ExactSpelling = true)]
+        [DllImport(DllName, EntryPoint = "LoadImageW")]
         public static extern IntPtr LoadImage(IntPtr hInstance, IntPtr lpszName, LoadImageTypes imageType, int cxDesired, int cyDesired, uint fuLoad);
 
         [DllImport(DllName)]
@@ -70,11 +70,11 @@ namespace ManagedWin32.Api
         [DllImport(DllName)]
         public static extern bool GetUserObjectInformation(IntPtr hObj, int nIndex, IntPtr pvInfo, int nLength, ref int lpnLengthNeeded);
 
-        [DllImport(DllName, CharSet = CharSet.Auto, ExactSpelling = true)]
+        [DllImport(DllName)]
         public static extern int GetSystemMetrics(SystemMetrics nIndex);
 
-        [DllImport(DllName, ExactSpelling = true, SetLastError = true)]
-        public static extern bool ExitWindowsEx(ShutdownFlags Flag, int Reason);
+        [DllImport(DllName, EntryPoint = "ExitWindowsEx")]
+        public static extern bool ExitWindows(ShutdownFlags Flag, int Reason);
 
         [DllImport(DllName)]
         public static extern void LockWorkStation();
@@ -201,6 +201,9 @@ namespace ManagedWin32.Api
         public static extern bool DestroyWindow(IntPtr hWnd);
 
         #region DoubleClickTime
+        [DllImport(DllName)]
+        static extern int GetDoubleClickTime();
+
         /// <summary>
         /// Gets the maximum number of milliseconds that can elapse between a
         /// first click and a second click for the OS to consider the
@@ -209,10 +212,7 @@ namespace ManagedWin32.Api
         /// <returns>The maximum amount of time, in milliseconds, that can
         /// elapse between a first click and a second click for the OS to
         /// consider the mouse action a double-click.</returns>
-        [DllImport(DllName, CharSet = CharSet.Auto, ExactSpelling = true)]
-        static extern int GetDoubleClickTime();
-
-        public static int DoubleClickTime { get { return GetDoubleClickTime(); } }
+        public static int DoubleClickTime => GetDoubleClickTime();
         #endregion
 
         /// <summary>
@@ -305,14 +305,14 @@ namespace ManagedWin32.Api
 
         #region Window Text
         [DllImport(DllName, SetLastError = true)]
-        public static extern int GetWindowTextLength(IntPtr hWnd);
+        static extern int GetWindowTextLength(IntPtr hWnd);
 
         [DllImport(DllName, SetLastError = true)]
-        public static extern int GetWindowText(IntPtr hWnd, [Out] StringBuilder lpString, int nMaxCount);
+        static extern int GetWindowText(IntPtr hWnd, [Out] StringBuilder lpString, int nMaxCount);
 
         public static string GetWindowText(IntPtr hWnd)
         {
-            StringBuilder title = new StringBuilder(GetWindowTextLength(hWnd) + 1);
+            var title = new StringBuilder(GetWindowTextLength(hWnd) + 1);
             GetWindowText(hWnd, title, title.Capacity);
             return title.ToString();
         }
@@ -324,10 +324,10 @@ namespace ManagedWin32.Api
         [DllImport(DllName)]
         public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, IntPtr ProcessId);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
-        [DllImport(DllName, SetLastError = true)]
+        [DllImport(DllName)]
         public static extern int GetWindowModuleFileName(IntPtr hWnd, [Out] StringBuilder module, int size);
 
         [DllImport(DllName)]
@@ -336,7 +336,7 @@ namespace ManagedWin32.Api
         [DllImport(DllName)]
         public static extern bool IsWindow(IntPtr hWND);
 
-        [DllImport(DllName, ExactSpelling = true, CharSet = CharSet.Auto)]
+        [DllImport(DllName)]
         public static extern IntPtr GetParent(IntPtr hWnd);
 
         [DllImport(DllName)]

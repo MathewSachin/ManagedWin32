@@ -34,11 +34,10 @@ namespace ManagedWin32
         {
             get
             {
-                if (Handle == DesktopWindow.Handle) return "Desktop";
+                if (Handle == DesktopWindow.Handle)
+                    return "Desktop";
 
-                StringBuilder title = new StringBuilder(User32.GetWindowTextLength(Handle) + 1);
-                User32.GetWindowText(Handle, title, title.Capacity);
-                return title.ToString();
+                return User32.GetWindowText(Handle);                
             }
             set { User32.SetWindowText(Handle, value); }
         }
@@ -47,7 +46,7 @@ namespace ManagedWin32
         {
             get
             {
-                StringBuilder module = new StringBuilder(256);
+                var module = new StringBuilder(256);
                 User32.GetWindowModuleFileName(Handle, module, 256);
                 return module.ToString();
             }
@@ -70,7 +69,8 @@ namespace ManagedWin32
             set
             {
                 //show the window
-                if (value == true) User32.ShowWindowAsync(Handle, ShowWindowFlags.Normal);
+                if (value == true) 
+                    User32.ShowWindowAsync(Handle, ShowWindowFlags.Normal);
 
                 //hide the window
                 else Hide();
@@ -101,8 +101,11 @@ namespace ManagedWin32
             {
                 int pid;
                 int tid = User32.GetWindowThreadProcessId(Handle, out pid);
+                
                 foreach (ProcessThread t in Process.GetProcessById(pid).Threads)
-                    if (t.Id == tid) return t;
+                    if (t.Id == tid)
+                        return t;
+
                 throw new Exception("Thread not found");
             }
         }
@@ -162,7 +165,7 @@ namespace ManagedWin32
 
         public static IEnumerable<WindowHandler> Enumerate()
         {
-            List<WindowHandler> list = new List<WindowHandler>();
+            var list = new List<WindowHandler>();
 
             User32.EnumWindows((hWnd, lParam) =>
                 {
@@ -181,10 +184,7 @@ namespace ManagedWin32
 
         public Point Location
         {
-            set
-            {
-                User32.SetWindowPos(Handle, IntPtr.Zero, value.X, value.Y, 0, 0, SetWindowPositionFlags.NoSize | SetWindowPositionFlags.NoZOrder);
-            }
+            set { User32.SetWindowPos(Handle, IntPtr.Zero, value.X, value.Y, 0, 0, SetWindowPositionFlags.NoSize | SetWindowPositionFlags.NoZOrder); }
         }
         
         //Override ToString() 

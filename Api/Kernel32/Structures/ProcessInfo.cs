@@ -8,7 +8,7 @@ namespace ManagedWin32.Api
     {
         public IntPtr hProcess;
         public IntPtr hThread;
-        public int dwProcessId;
-        public int dwThreadId;
+        public int ProcessId;
+        public int ThreadId;
     }
 }
