@@ -4,9 +4,6 @@ using System.Runtime.InteropServices;
 
 namespace ManagedWin32
 {
-    /// <summary>
-    /// Holds a set of utilities.
-    /// </summary>
     public static class StructSerializer
     {
         /// <summary>

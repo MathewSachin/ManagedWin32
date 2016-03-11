@@ -34,11 +34,13 @@ namespace ManagedWin32
             get
             {
                 // get name.
-                if (IsOpen) return null;
+                if (IsOpen)
+                    return null;
 
                 // check its not a null pointer.
                 // null pointers wont work.
-                if (DesktopHandle == IntPtr.Zero) return null;
+                if (DesktopHandle == IntPtr.Zero)
+                    return null;
 
                 // get the length of the name.
                 int needed = 0;
@@ -52,7 +54,8 @@ namespace ManagedWin32
                 Marshal.FreeHGlobal(ptr);
 
                 // something went wrong.
-                if (!result) return null;
+                if (!result)
+                    return null;
 
                 return name;
             }
@@ -74,7 +77,8 @@ namespace ManagedWin32
                 DesktopHandle = User32.OpenDesktop(name, 0, true, DesktopAccessRights.AllRights);
 
                 // something went wrong.
-                if (DesktopHandle == IntPtr.Zero) throw new Exception();
+                if (DesktopHandle == IntPtr.Zero)
+                    throw new Exception();
 
                 return;
             }
@@ -83,7 +87,8 @@ namespace ManagedWin32
             DesktopHandle = User32.CreateDesktop(name, IntPtr.Zero, IntPtr.Zero, 0, DesktopAccessRights.AllRights, IntPtr.Zero);
 
             // something went wrong.
-            if (DesktopHandle == IntPtr.Zero) throw new Exception();
+            if (DesktopHandle == IntPtr.Zero)
+                throw new Exception();
         }
 
         // constructor is private to prevent invalid handles being passed to it.
@@ -110,7 +115,8 @@ namespace ManagedWin32
                 // close the desktop.
                 bool result = User32.CloseDesktop(DesktopHandle);
 
-                if (result) DesktopHandle = IntPtr.Zero;
+                if (result) 
+                    DesktopHandle = IntPtr.Zero;
 
                 return result;
             }
@@ -129,7 +135,8 @@ namespace ManagedWin32
             CheckDisposed();
 
             // make sure there is a desktop to open.
-            if (DesktopHandle == IntPtr.Zero) return false;
+            if (DesktopHandle == IntPtr.Zero) 
+                return false;
 
             // attempt to switch desktops.
             bool result = User32.SwitchDesktop(DesktopHandle);
@@ -148,9 +155,10 @@ namespace ManagedWin32
             CheckDisposed();
 
             // make sure a desktop is open.
-            if (!IsOpen) yield break;
+            if (!IsOpen) 
+                yield break;
 
-            List<WindowHandler> m_windows = new List<WindowHandler>();
+            var m_windows = new List<WindowHandler>();
 
             // get windows.
             if (!User32.EnumDesktopWindows(DesktopHandle, new EnumDesktopWindowsProc((hWnd, lParam) =>
@@ -161,7 +169,8 @@ namespace ManagedWin32
                     return true;
                 }), IntPtr.Zero)) yield break;
 
-            foreach (WindowHandler window in m_windows) yield return window;
+            foreach (WindowHandler window in m_windows) 
+                yield return window;
         }
 
         /// <summary>
@@ -245,23 +254,19 @@ namespace ManagedWin32
         /// <summary>
         /// Opens the current input desktop.
         /// </summary>
-        /// <returns>True if the desktop was succesfully opened.</returns>
-        public static Desktop CurrentInputDesktop
-        {
-            get { return new Desktop(User32.OpenInputDesktop(0, true, DesktopAccessRights.AllRights)); }
-        }
+        public static Desktop CurrentInputDesktop => new Desktop(User32.OpenInputDesktop(0, true, DesktopAccessRights.AllRights));
 
         /// <summary>
         /// Enumerates all of the desktops.
         /// </summary>
-        /// <param name="desktops">String array to recieve desktop names.</param>
         public static IEnumerable<Desktop> GetDesktops()
         {
             // attempt to enum desktops.
             IntPtr windowStation = User32.GetProcessWindowStation();
 
             // check we got a valid handle.
-            if (windowStation == IntPtr.Zero) yield break;
+            if (windowStation == IntPtr.Zero) 
+                yield break;
 
             List<Desktop> desktops = new List<Desktop>();
 
@@ -273,9 +278,11 @@ namespace ManagedWin32
                 }), IntPtr.Zero);
 
             // something went wrong.
-            if (!result) yield break;
+            if (!result) 
+                yield break;
 
-            foreach (Desktop desktop in desktops) yield return desktop;
+            foreach (Desktop desktop in desktops) 
+                yield return desktop;
         }
 
         /// <summary>
@@ -294,7 +301,8 @@ namespace ManagedWin32
             set
             {
                 // set threads desktop.
-                if (!value.IsOpen) return;
+                if (!value.IsOpen)
+                    return;
 
                 User32.SetThreadDesktop(value.DesktopHandle);
             }
@@ -318,8 +326,10 @@ namespace ManagedWin32
             foreach (Desktop desktop in GetDesktops())
             {
                 // case insensitive, compare all in lower case.
-                if (caseInsensitive) { if (desktop.ToString().ToLower() == name.ToLower()) return true; }
-                else if (desktop.ToString() == name) return true;
+                if (caseInsensitive && desktop.ToString().ToLower() == name.ToLower()) 
+                    return true;
+                else if (desktop.ToString() == name)
+                    return true;
             }
 
             return false;

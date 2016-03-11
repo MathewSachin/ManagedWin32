@@ -49,6 +49,10 @@
     <Compile Include="Api\DWMApi\Structures\DWMThumbnailProperties.cs" />
     <Compile Include="Api\Kernel32\Structures\Icon Structs.cs" />
     <Compile Include="Api\Gdi32\RECT.cs" />
+    <Compile Include="Api\Shell32\Enumerations\FolderBrowserOptions.cs" />
+    <Compile Include="Api\Shell32\IMalloc.cs" />
+    <Compile Include="Api\Shell32\Structures\BrowseInfo.cs" />
+    <Compile Include="Api\Shell32\WndProc.cs" />
     <Compile Include="Api\User32\Delegates\EnumDesktopProc.cs" />
     <Compile Include="Api\User32\Delegates\EnumDesktopWIndowsProc.cs" />
     <Compile Include="Api\User32\Delegates\EnumWindowsProc.cs" />

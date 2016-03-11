@@ -5,25 +5,25 @@ namespace ManagedWin32
 {
     public enum SoundFlags
     {
-        SYNC = 0,
+        Sync = 0,
 
-        ASYNC = 1,
+        Async = 1,
 
-        NODEFAULT = 2,
+        NoDefault = 2,
 
-        MEMORY = 4,
+        Memory = 4,
 
-        LOOP = 8,
+        Loop = 8,
 
-        PURGE = 64,
+        Purge = 64,
 
-        FILENAME = 0x20000,
+        FileName = 0x20000,
 
-        NOSTOP = 16
+        NoStop = 16
 
     }
 
-    class SoundPlayer
+    public class SoundPlayer
     {        
         [DllImport("winmm.dll", CharSet = CharSet.Auto, ExactSpelling = false)]
         public static extern bool PlaySound(string soundName, IntPtr hmod, SoundFlags SoundFlags);
