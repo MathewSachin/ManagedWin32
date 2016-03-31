@@ -49,7 +49,7 @@ namespace ManagedWin32.Api
         {
             get
             {
-                WindowPlacement result = new WindowPlacement();
+                var result = new WindowPlacement();
                 result.Length = Marshal.SizeOf(result);
                 return result;
             }

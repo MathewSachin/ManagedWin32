@@ -17,5 +17,5 @@ namespace ManagedWin32.Api
         
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 80)]
         public string szTypeName;
-    };
+    }
 }

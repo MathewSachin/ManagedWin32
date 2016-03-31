@@ -30,7 +30,7 @@ namespace ManagedWin32.Api
         {
             get
             {
-                int Size = 256;
+                var Size = 256;
                 var sb = new StringBuilder(Size);
                 GetUserName(sb, ref Size);
                 return sb.ToString(0, Size);

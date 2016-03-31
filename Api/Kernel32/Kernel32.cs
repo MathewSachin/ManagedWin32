@@ -46,7 +46,7 @@ namespace ManagedWin32.Api
         public static extern void SetLastError(uint dwErrCode);
 
         [DllImport(DllName)]
-        public static extern Int32 CloseHandle(IntPtr hObject);
+        public static extern int CloseHandle(IntPtr hObject);
 
         [DllImport(DllName, SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern int QueryDosDevice(string lpDeviceName, StringBuilder lpTargetPath, int ucchMax);
@@ -178,13 +178,13 @@ namespace ManagedWin32.Api
         public static extern int SizeofResource(IntPtr hModule, IntPtr hResInfo);
 
         [DllImport(DllName)]
-        public static extern Int32 ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [In, Out] byte[] buffer, UInt32 size, out IntPtr lpNumberOfBytesRead);
+        public static extern int ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [In, Out] byte[] buffer, uint size, out IntPtr lpNumberOfBytesRead);
 
         [DllImport(DllName)]
-        public static extern Int32 WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [In, Out] byte[] buffer, UInt32 size, out IntPtr lpNumberOfBytesWritten);
+        public static extern int WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [In, Out] byte[] buffer, uint size, out IntPtr lpNumberOfBytesWritten);
 
         [DllImport(DllName)]
-        public static extern IntPtr OpenProcess(ProcessAccess dwDesiredAccess, Int32 bInheritHandle, UInt32 dwProcessId);
+        public static extern IntPtr OpenProcess(ProcessAccess dwDesiredAccess, int bInheritHandle, uint dwProcessId);
 
         [DllImport(DllName)]
         [return: MarshalAs(UnmanagedType.Bool)]

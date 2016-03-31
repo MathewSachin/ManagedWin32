@@ -9,23 +9,25 @@ namespace ManagedWin32
     {
         const int  MAX_PATH = 260;
 
-        public string FileName { get; set; } = null;
+        public string FileName { get; set; }
 
-        public int IconIndex { get; set; } = 0;
+        public int IconIndex { get; set; }
 
         protected override bool RunDialog(IntPtr OwnerWindow)
         {
-            var PathBuffer = new StringBuilder(FileName, MAX_PATH);
+            var pathBuffer = new StringBuilder(FileName, MAX_PATH);
+
             int i;
 
-            bool Result = Shell32.SHPickIconDialog(OwnerWindow, PathBuffer, MAX_PATH, out i);
-            if (Result)
-            {
-                FileName = Environment.ExpandEnvironmentVariables(PathBuffer.ToString());
-                IconIndex = i;
-            }
+            var result = Shell32.SHPickIconDialog(OwnerWindow, pathBuffer, MAX_PATH, out i);
 
-            return Result;
+            if (!result)
+                return false;
+
+            FileName = Environment.ExpandEnvironmentVariables(pathBuffer.ToString());
+            IconIndex = i;
+
+            return true;
         }
 
         public override void Reset()

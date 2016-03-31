@@ -18,7 +18,7 @@ namespace ManagedWin32.Api
         /// <returns>NIco.GroupIconDir</returns>
         public GroupIconDir ToGroupIconDir()
         {
-            return new GroupIconDir()
+            return new GroupIconDir
             {
                 Reserved = Reserved,
                 Type = Type,
@@ -49,7 +49,7 @@ namespace ManagedWin32.Api
         /// <returns>NIco.GroupIconDirEntry</returns>
         public GroupIconDirEntry ToGroupIconDirEntry(int id)
         {
-            return new GroupIconDirEntry()
+            return new GroupIconDirEntry
             {
                 Width = Width,
                 Height = Height,
@@ -79,7 +79,7 @@ namespace ManagedWin32.Api
         /// <returns>NIco.IconDir</returns>
         public IconDir ToIconDir()
         {
-            return new IconDir()
+            return new IconDir
             {
                 Reserved = Reserved,
                 Type = Type,
@@ -102,15 +102,10 @@ namespace ManagedWin32.Api
         public short BitCount;       // Bits per pixel
         public int BytesInRes;     // How many bytes in this resource?
         public short ID;             // the ID
-
-        /// <summary>
-        /// Converts the current NIco.GroupIconDirEntry into NIco.IconDirEntry.
-        /// </summary>
-        /// <param name="id">The resource identifier.</param>
-        /// <returns>NIco.IconDirEntry</returns>
+        
         public IconDirEntry ToIconDirEntry(int imageOffiset)
         {
-            return new IconDirEntry()
+            return new IconDirEntry
             {
                 Width = Width,
                 Height = Height,

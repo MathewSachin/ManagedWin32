@@ -931,6 +931,6 @@
         /// <summary>
         /// Clear key
         /// </summary>
-        OEM_CLEAR = 0xFE,
+        OEM_CLEAR = 0xFE
     }
 }

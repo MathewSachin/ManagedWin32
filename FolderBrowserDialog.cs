@@ -52,7 +52,7 @@ namespace ManagedWin32
         /// </returns>
         protected override bool RunDialog(IntPtr hwndOwner)
         {
-            bool result = false;
+            var result = false;
 
             IntPtr pidlRoot = IntPtr.Zero,
                 pszPath = IntPtr.Zero,
@@ -96,7 +96,7 @@ namespace ManagedWin32
             }
             finally // release all unmanaged resources
             {
-                IMalloc malloc = GetSHMalloc();
+                var malloc = GetSHMalloc();
 
                 if (pidlRoot != IntPtr.Zero) 
                     malloc.Free(pidlRoot);

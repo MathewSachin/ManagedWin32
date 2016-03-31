@@ -62,54 +62,56 @@ namespace ManagedWin32.Api
         {
             get
             {
-                IntPtr guidPtr = new IntPtr();
-                int res = PowerGetActiveScheme(0, ref guidPtr);
-                if (res != 0) throw new Win32Exception((int)res);
+                var guidPtr = new IntPtr();
+                var res = PowerGetActiveScheme(0, ref guidPtr);
+                if (res != 0) throw new Win32Exception(res);
 
-                Guid ret = (Guid)Marshal.PtrToStructure(guidPtr, typeof(Guid));
+                var ret = (Guid)Marshal.PtrToStructure(guidPtr, typeof(Guid));
                 Marshal.FreeHGlobal(guidPtr);
 
                 return ret;
             }
             set
             {
-                int res = PowerSetActiveScheme(0, ref value);
-                if (res != 0) throw new Win32Exception((int)res);
+                var res = PowerSetActiveScheme(0, ref value);
+                if (res != 0) throw new Win32Exception(res);
             }
         }
 
         public static int ReadPowerSetting(bool ac, ref Guid activeSchemeGuid, ref Guid subGroupGuid, ref Guid settingGuid, ref int value)
         {
-            int res = 0;
+            var res = ac ? PowerReadACValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value) 
+                         : PowerReadDCValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
 
-            if (ac) res = PowerReadACValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
-            else res = PowerReadDCValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
-
-            if (res != 0) throw new Win32Exception((int)res);
+            if (res != 0)
+                throw new Win32Exception(res);
 
             return res;
         }
 
         public static int ReadDefaultSetting(bool ac, ref Guid activeSchemeGuid, ref Guid subGroupGuid, ref Guid settingGuid, ref int value)
         {
-            int res = 0;
+            var res = ac ? PowerReadACDefaultIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value)
+                         : PowerReadDCDefaultIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
 
-            if (ac) res = PowerReadACDefaultIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
-            else res = PowerReadDCDefaultIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, ref value);
+            if (res != 0)
+                throw new Win32Exception(res);
 
-            if (res != 0) throw new Win32Exception((int)res);
             return res;
         }
 
         public static int WritePowerSetting(bool ac, ref Guid activeSchemeGuid, ref Guid subGroupGuid, ref Guid settingGuid, int newValue)
         {
-            int res = ac ? PowerWriteACValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, newValue)
-                : PowerWriteDCValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, newValue);
+            var res = ac ? PowerWriteACValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, newValue)
+                         : PowerWriteDCValueIndex(0, ref activeSchemeGuid, ref subGroupGuid, ref settingGuid, newValue);
 
-            if (res != 0) throw new Win32Exception((int)res);
+            if (res != 0)
+                throw new Win32Exception(res);
 
             res = PowerSetActiveScheme(0, ref activeSchemeGuid);
-            if (res != 0) throw new Win32Exception((int)res);
+
+            if (res != 0)
+                throw new Win32Exception(res);
 
             return res;
         }
@@ -125,7 +127,7 @@ namespace ManagedWin32.Api
                      BalancedGuid = new Guid();
 
                 int SchemeIndex = 0,
-                    BufferSize = (int)Marshal.SizeOf(typeof(Guid));
+                    BufferSize = Marshal.SizeOf(typeof(Guid));
 
                 while (PowerEnumerate(0, IntPtr.Zero, IntPtr.Zero, 16, SchemeIndex, ref Buffer, ref BufferSize) == 0)
                 {
@@ -155,8 +157,11 @@ namespace ManagedWin32.Api
         {
             get
             {
-                int res = PowerSettingAccessCheck(PowerDataAccessor.ACCESS_ACTIVE_SCHEME, new Guid());
-                if (res != 0) throw new Win32Exception((int)res);
+                var res = PowerSettingAccessCheck(PowerDataAccessor.ACCESS_ACTIVE_SCHEME, new Guid());
+
+                if (res != 0)
+                    throw new Win32Exception(res);
+
                 return res;
             }
         }
@@ -166,8 +171,10 @@ namespace ManagedWin32.Api
             get
             {
                 var powercapabilityes = new SystemPowerCapablities();
-                int result = CallNtPowerInformation(4, IntPtr.Zero, 0, ref powercapabilityes, (int)Marshal.SizeOf(powercapabilityes));
-                if (result != 0) return false;
+                var result = CallNtPowerInformation(4, IntPtr.Zero, 0, ref powercapabilityes, Marshal.SizeOf(powercapabilityes));
+
+                if (result != 0)
+                    return false;
 
                 return powercapabilityes.VideoDimPresent == 1;
             }
@@ -177,24 +184,27 @@ namespace ManagedWin32.Api
         {
             get
             {
-                Guid ptrActiveGuid = ActiveSchemeGuid;
+                var ptrActiveGuid = ActiveSchemeGuid;
 
-                int buffSize = 0;
-                int res = PowerReadFriendlyName(IntPtr.Zero, ref ptrActiveGuid, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, ref buffSize);
+                var buffSize = 0;
+                var res = PowerReadFriendlyName(IntPtr.Zero, ref ptrActiveGuid, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero, ref buffSize);
+
+                if (res != 0)
+                    throw new Win32Exception(res);
+
+                var ptrName = Marshal.AllocHGlobal(buffSize);
+                res = PowerReadFriendlyName(IntPtr.Zero, ref ptrActiveGuid, IntPtr.Zero, IntPtr.Zero, ptrName, ref buffSize);
+
                 if (res == 0)
                 {
-                    IntPtr ptrName = Marshal.AllocHGlobal((int)buffSize);
-                    res = PowerReadFriendlyName(IntPtr.Zero, ref ptrActiveGuid, IntPtr.Zero, IntPtr.Zero, ptrName, ref buffSize);
-                    if (res == 0)
-                    {
-                        string ret = Marshal.PtrToStringUni(ptrName);
-                        Marshal.FreeHGlobal(ptrName);
-                        return ret;
-                    }
+                    var ret = Marshal.PtrToStringUni(ptrName);
                     Marshal.FreeHGlobal(ptrName);
+                    return ret;
                 }
 
-                throw new Win32Exception((int)res);
+                Marshal.FreeHGlobal(ptrName);
+
+                throw new Win32Exception(res);
             }
         }
     }

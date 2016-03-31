@@ -11,5 +11,5 @@
         AppliancePC = 6,
         PerformanceServer = 7,
         Maximum = 8
-    };
+    }
 }

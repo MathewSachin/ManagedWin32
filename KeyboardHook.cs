@@ -9,7 +9,7 @@ namespace ManagedWin32
     {
         #region Fields
         WindowInteropHelper host;
-        bool IsDisposed = false;
+        bool IsDisposed;
         int Identifier;
         Random Randomizer = new Random(DateTime.Now.Millisecond);
 
@@ -38,9 +38,8 @@ namespace ManagedWin32
         void ProcessMessage(ref MSG msg, ref bool handled)
         {
             if ((msg.message == (int)WindowsMessage.HOTKEY) 
-                && (msg.wParam.ToInt32() == Identifier) 
-                && (Triggered != null))
-                Triggered();
+                && (msg.wParam.ToInt32() == Identifier))
+                Triggered?.Invoke();
         }
 
         public event Action Triggered;

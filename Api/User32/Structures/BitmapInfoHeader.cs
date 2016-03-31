@@ -27,7 +27,7 @@ namespace ManagedWin32.Api
 
         public unsafe void Read(Stream stream)
         {
-            byte[] array = new byte[sizeof(BitmapInfoHeader)];
+            var array = new byte[sizeof(BitmapInfoHeader)];
             stream.Read(array, 0, array.Length);
             fixed (byte* pData = array)
                 this = *(BitmapInfoHeader*)pData;
@@ -35,7 +35,7 @@ namespace ManagedWin32.Api
 
         public unsafe void Write(Stream stream)
         {
-            byte[] array = new byte[sizeof(BitmapInfoHeader)];
+            var array = new byte[sizeof(BitmapInfoHeader)];
             fixed (BitmapInfoHeader* ptr = &this)
                 Marshal.Copy((IntPtr)ptr, array, 0, sizeof(BitmapInfoHeader));
             stream.Write(array, 0, sizeof(BitmapInfoHeader));

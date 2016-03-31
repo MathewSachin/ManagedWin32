@@ -1,5 +1,8 @@
-﻿namespace ManagedWin32.Api
+﻿using System;
+
+namespace ManagedWin32.Api
 {
+    [Flags]
     public enum SetWindowPositionFlags
     {
         NoMove = 0x2,

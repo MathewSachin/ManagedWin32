@@ -2,7 +2,7 @@
 {
     /// <summary>
     /// Main operations performed on the
-    /// <see cref="WinApi.Shell_NotifyIcon"/> function.
+    /// <see cref="Shell32.Shell_NotifyIcon"/> function.
     /// </summary>
     public enum NotifyCommand
     {

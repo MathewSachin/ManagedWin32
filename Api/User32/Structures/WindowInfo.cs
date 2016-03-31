@@ -15,12 +15,5 @@ namespace ManagedWin32.Api
         public uint cyWindowBorders;
         public ushort atomWindowType;
         public ushort wCreatorVersion;
-
-        // Allows automatic initialization of "cbSize" with "new WINDOWINFO(null/true/false)".
-        public WindowInfo(bool? filler)
-            : this()
-        {
-            cbSize = (uint)Marshal.SizeOf(typeof(WindowInfo));
-        }
     }
 }

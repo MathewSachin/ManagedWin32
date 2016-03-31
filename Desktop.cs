@@ -2,6 +2,7 @@ using ManagedWin32.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -17,7 +18,7 @@ namespace ManagedWin32
         const int NORMAL_PRIORITY_CLASS = 0x00000020;
         #endregion
 
-        bool IsDisposed = false;
+        bool IsDisposed;
 
         #region Public Properties
         /// <summary>
@@ -43,21 +44,17 @@ namespace ManagedWin32
                     return null;
 
                 // get the length of the name.
-                int needed = 0;
-                string name = String.Empty;
+                var needed = 0;
                 User32.GetUserObjectInformation(DesktopHandle, UOI_NAME, IntPtr.Zero, 0, ref needed);
 
                 // get the name.
-                IntPtr ptr = Marshal.AllocHGlobal(needed);
-                bool result = User32.GetUserObjectInformation(DesktopHandle, UOI_NAME, ptr, needed, ref needed);
-                name = Marshal.PtrToStringAnsi(ptr);
+                var ptr = Marshal.AllocHGlobal(needed);
+                var result = User32.GetUserObjectInformation(DesktopHandle, UOI_NAME, ptr, needed, ref needed);
+                var name = Marshal.PtrToStringAnsi(ptr);
                 Marshal.FreeHGlobal(ptr);
 
                 // something went wrong.
-                if (!result)
-                    return null;
-
-                return name;
+                return !result ? null : name;
             }
         }
 
@@ -110,19 +107,16 @@ namespace ManagedWin32
             CheckDisposed();
 
             // check there is a desktop open.
-            if (DesktopHandle != IntPtr.Zero)
-            {
-                // close the desktop.
-                bool result = User32.CloseDesktop(DesktopHandle);
+            if (DesktopHandle == IntPtr.Zero)
+                return true;
 
-                if (result) 
-                    DesktopHandle = IntPtr.Zero;
+            // close the desktop.
+            var result = User32.CloseDesktop(DesktopHandle);
 
-                return result;
-            }
+            if (result) 
+                DesktopHandle = IntPtr.Zero;
 
-            // no desktop was open, so desktop is closed.
-            return true;
+            return result;
         }
 
         /// <summary>
@@ -139,7 +133,7 @@ namespace ManagedWin32
                 return false;
 
             // attempt to switch desktops.
-            bool result = User32.SwitchDesktop(DesktopHandle);
+            var result = User32.SwitchDesktop(DesktopHandle);
 
             return result;
         }
@@ -147,7 +141,6 @@ namespace ManagedWin32
         /// <summary>
         /// Enumerates the windows on a desktop.
         /// </summary>
-        /// <param name="windows">Array of Desktop.Window objects to recieve windows.</param>
         /// <returns>A window colleciton if successful, otherwise null.</returns>
         public IEnumerable<WindowHandler> GetWindows()
         {
@@ -161,15 +154,15 @@ namespace ManagedWin32
             var m_windows = new List<WindowHandler>();
 
             // get windows.
-            if (!User32.EnumDesktopWindows(DesktopHandle, new EnumDesktopWindowsProc((hWnd, lParam) =>
-                {
-                    // add window handle to colleciton.
-                    m_windows.Add(new WindowHandler(hWnd));
+            if (!User32.EnumDesktopWindows(DesktopHandle, (hWnd, lParam) =>
+            {
+                // add window handle to colleciton.
+                m_windows.Add(new WindowHandler(hWnd));
 
-                    return true;
-                }), IntPtr.Zero)) yield break;
+                return true;
+            }, IntPtr.Zero)) yield break;
 
-            foreach (WindowHandler window in m_windows) 
+            foreach (var window in m_windows) 
                 yield return window;
         }
 
@@ -195,14 +188,10 @@ namespace ManagedWin32
             var pi = new ProcessInfo();
 
             // start the process.
-            bool result = Kernel32.CreateProcess(null, path, IntPtr.Zero, IntPtr.Zero, true, NORMAL_PRIORITY_CLASS, IntPtr.Zero, null, ref si, ref pi);
+            var result = Kernel32.CreateProcess(null, path, IntPtr.Zero, IntPtr.Zero, true, NORMAL_PRIORITY_CLASS, IntPtr.Zero, null, ref si, ref pi);
 
             // error?
-            if (!result)
-                return null;
-
-            // Get the process.
-            return Process.GetProcessById(pi.ProcessId);
+            return !result ? null : Process.GetProcessById(pi.ProcessId);
         }
 
         /// <summary>
@@ -227,26 +216,13 @@ namespace ManagedWin32
         public IEnumerable<Process> GetProcesses()
         {
             // get all processes.
-            Process[] processes = Process.GetProcesses();
+            var processes = Process.GetProcesses();
 
             // get the current desktop name.
-            string name = DesktopName;
+            var name = DesktopName;
 
             // cycle through the processes.
-            foreach (Process process in processes)
-            {
-                // check the threads of the process - are they in this one?
-                foreach (ProcessThread pt in process.Threads)
-                {
-                    // check for a desktop name match.
-                    if (new Desktop(User32.GetThreadDesktop(pt.Id)).DesktopName == name)
-                    {
-                        // found a match, add to list, and bail.
-                        yield return process;
-                        break;
-                    }
-                }
-            }
+            return processes.Where(process => process.Threads.Cast<ProcessThread>().Any(pt => new Desktop(User32.GetThreadDesktop(pt.Id)).DesktopName == name));
         }
         #endregion
 
@@ -262,27 +238,23 @@ namespace ManagedWin32
         public static IEnumerable<Desktop> GetDesktops()
         {
             // attempt to enum desktops.
-            IntPtr windowStation = User32.GetProcessWindowStation();
+            var windowStation = User32.GetProcessWindowStation();
 
             // check we got a valid handle.
             if (windowStation == IntPtr.Zero) 
-                yield break;
+                return null;
 
-            List<Desktop> desktops = new List<Desktop>();
+            var desktops = new List<Desktop>();
 
-            bool result = User32.EnumDesktops(windowStation, new EnumDesktopProc((lpszDesktop, lParam) =>
-                {
-                    desktops.Add(Open(lpszDesktop));
+            var result = User32.EnumDesktops(windowStation, (lpszDesktop, lParam) =>
+            {
+                desktops.Add(Open(lpszDesktop));
 
-                    return true;
-                }), IntPtr.Zero);
+                return true;
+            }, IntPtr.Zero);
 
             // something went wrong.
-            if (!result) 
-                yield break;
-
-            foreach (Desktop desktop in desktops) 
-                yield return desktop;
+            return !result ? null : desktops;
         }
 
         /// <summary>
@@ -293,7 +265,6 @@ namespace ManagedWin32
         /// Sets the desktop of the calling thread.
         /// NOTE: Function will fail if thread has hooks or windows in the current desktop.
         /// </summary>
-        /// <param name="desktop">Desktop to put the thread in.</param>
         /// <returns>True if the threads desktop was successfully changed.</returns>
         public static Desktop Current
         {
@@ -323,12 +294,13 @@ namespace ManagedWin32
         public static bool Exists(string name, bool caseInsensitive = false)
         {
             // return true if desktop exists.
-            foreach (Desktop desktop in GetDesktops())
+            foreach (var desktop in GetDesktops())
             {
                 // case insensitive, compare all in lower case.
-                if (caseInsensitive && desktop.ToString().ToLower() == name.ToLower()) 
+                if (caseInsensitive && string.Equals(desktop.ToString(), name, StringComparison.CurrentCultureIgnoreCase)) 
                     return true;
-                else if (desktop.ToString() == name)
+
+                if (desktop.ToString() == name)
                     return true;
             }
 

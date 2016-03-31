@@ -31,7 +31,7 @@ namespace ManagedWin32
         /// <summary>
         /// KEYEVENTF_SCANCODE = 0x0008 (Windows 2000/XP: If specified, the system synthesizes a VK_PACKET keystroke. The wVk parameter must be zero. This flag can only be combined with the KEYEVENTF_KEYUP flag. For more information, see the Remarks section.)
         /// </summary>
-        ScanCode = 0x0008,
+        ScanCode = 0x0008
     }
 
     /// <summary>
@@ -52,7 +52,7 @@ namespace ManagedWin32
         /// <summary>
         /// INPUT_HARDWARE = 0x02 (Windows 95/98/Me: The event is from input hardware other than a keyboard or mouse. Use the hi structure of the union.)
         /// </summary>
-        Hardware,
+        Hardware
     }
 
     /// <summary>
@@ -124,10 +124,10 @@ namespace ManagedWin32
         /// <summary>
         /// Specifies that the dx and dy members contain normalized absolute coordinates. If the flag is not set, dxand dy contain relative data (the change in position since the last reported position). This flag can be set, or not set, regardless of what kind of mouse or other pointing device, if any, is connected to the system. For further information about relative mouse motion, see the following Remarks section.
         /// </summary>
-        Absolute = 0x8000,
+        Absolute = 0x8000
     }
 
-    public enum MouseButton { LeftButton, MiddleButton, RightButton, }
+    public enum MouseButton { LeftButton, MiddleButton, RightButton }
     #endregion
 
     /// <summary>
@@ -138,29 +138,29 @@ namespace ManagedWin32
         /// <summary>
         /// The public list of <see cref="INPUT"/> messages being built by this instance.
         /// </summary>
-        readonly List<INPUT> InputList = new List<INPUT>();
+        readonly List<INPUT> _inputList = new List<INPUT>();
 
         public const int MouseWheelClickSize = 120;
 
-        public void Clear() => InputList.Clear();
+        public void Clear() => _inputList.Clear();
 
-        public int Count => InputList.Count;
+        public int Count => _inputList.Count;
 
         /// <returns>True on Success</returns>
         public bool Simulate(bool ClearAfterSimulation = true)
         {
-            if (Count > 0)
-            {
-                uint NoOfSucesses = User32.SendInput((uint)Count, InputList.ToArray(), Marshal.SizeOf(typeof(INPUT)));
+            if (Count <= 0)
+                return true;
 
-                if (NoOfSucesses == Count)
-                {
-                    if (ClearAfterSimulation) Clear();
-                    return true;
-                }
-                else return false;
-            }
-            else return true;
+            var NoOfSucesses = User32.SendInput((uint)Count, _inputList.ToArray(), Marshal.SizeOf(typeof(INPUT)));
+
+            if (NoOfSucesses != Count)
+                return false;
+
+            if (ClearAfterSimulation)
+                Clear();
+
+            return true;
         }
 
         #region Key
@@ -221,7 +221,7 @@ namespace ManagedWin32
                             }
                     };
 
-            InputList.Add(down);
+            _inputList.Add(down);
         }
 
         /// <summary>
@@ -250,7 +250,7 @@ namespace ManagedWin32
                             }
                     };
 
-            InputList.Add(up);
+            _inputList.Add(up);
         }
 
         /// <summary>
@@ -264,7 +264,11 @@ namespace ManagedWin32
         }
         #endregion
 
-        public void KeysPress(IEnumerable<KeyCode> keyCodes) { foreach (var key in keyCodes) AddKeyPress(key); }
+        public void KeysPress(IEnumerable<KeyCode> keyCodes)
+        {
+            foreach (var key in keyCodes)
+                AddKeyPress(key);
+        }
 
         /// <summary>
         /// Simulates a modified keystroke where there are multiple modifiers and multiple keys like CTRL-ALT-K-C where CTRL and ALT are the modifierKeys and K and C are the keys.
@@ -274,11 +278,13 @@ namespace ManagedWin32
         /// <param name="keyCodes">The list of keys to simulate</param>
         public void ModifiedKeyStroke(IEnumerable<KeyCode> modifierKeyCodes, IEnumerable<KeyCode> keyCodes)
         {
-            foreach (var key in modifierKeyCodes) AddKeyDown(key);
+            foreach (var key in modifierKeyCodes)
+                AddKeyDown(key);
 
             KeysPress(keyCodes);
 
-            foreach (var key in modifierKeyCodes.Reverse()) AddKeyUp(key);
+            foreach (var key in modifierKeyCodes.Reverse())
+                AddKeyUp(key);
         }
 
         #region Characters
@@ -333,8 +339,8 @@ namespace ManagedWin32
                 up.Data.Keyboard.Flags |= KeyboardFlag.ExtendedKey;
             }
 
-            InputList.Add(down);
-            InputList.Add(up);
+            _inputList.Add(down);
+            _inputList.Add(up);
         }
 
         /// <summary>
@@ -361,7 +367,7 @@ namespace ManagedWin32
             movement.Data.Mouse.X = x;
             movement.Data.Mouse.Y = y;
 
-            InputList.Add(movement);
+            _inputList.Add(movement);
         }
 
         /// <summary>
@@ -374,7 +380,7 @@ namespace ManagedWin32
             movement.Data.Mouse.X = absoluteX;
             movement.Data.Mouse.Y = absoluteY;
 
-            InputList.Add(movement);
+            _inputList.Add(movement);
         }
 
         /// <summary>
@@ -387,7 +393,7 @@ namespace ManagedWin32
             movement.Data.Mouse.X = absoluteX;
             movement.Data.Mouse.Y = absoluteY;
 
-            InputList.Add(movement);
+            _inputList.Add(movement);
         }
         #endregion
 
@@ -411,15 +417,14 @@ namespace ManagedWin32
                     flg = MouseFlag.RightDown;
                     break;
 
-                case MouseButton.LeftButton:
                 default:
                     flg = MouseFlag.LeftDown;
                     break;
-            };
+            }
 
             buttonDown.Data.Mouse.Flags = flg;
 
-            InputList.Add(buttonDown);
+            _inputList.Add(buttonDown);
         }
 
         /// <summary>
@@ -430,7 +435,7 @@ namespace ManagedWin32
             var buttonDown = new INPUT { Type = InputType.Mouse };
             buttonDown.Data.Mouse.Flags = MouseFlag.XDown;
             buttonDown.Data.Mouse.MouseData = (uint)xButtonId;
-            InputList.Add(buttonDown);
+            _inputList.Add(buttonDown);
         }
 
         /// <summary>
@@ -452,14 +457,13 @@ namespace ManagedWin32
                     flg = MouseFlag.RightUp;
                     break;
 
-                case MouseButton.LeftButton:
                 default:
                     flg = MouseFlag.LeftUp;
                     break;
             }
 
             buttonUp.Data.Mouse.Flags = flg;
-            InputList.Add(buttonUp);
+            _inputList.Add(buttonUp);
         }
 
         /// <summary>
@@ -470,7 +474,7 @@ namespace ManagedWin32
             var buttonUp = new INPUT { Type = InputType.Mouse };
             buttonUp.Data.Mouse.Flags = MouseFlag.XUp;
             buttonUp.Data.Mouse.MouseData = (uint)xButtonId;
-            InputList.Add(buttonUp);
+            _inputList.Add(buttonUp);
         }
         #endregion
 
@@ -522,7 +526,7 @@ namespace ManagedWin32
             scroll.Data.Mouse.Flags = MouseFlag.VerticalWheel;
             scroll.Data.Mouse.MouseData = (uint)scrollAmount;
 
-            InputList.Add(scroll);
+            _inputList.Add(scroll);
         }
 
         /// <summary>
@@ -534,7 +538,7 @@ namespace ManagedWin32
             scroll.Data.Mouse.Flags = MouseFlag.HorizontalWheel;
             scroll.Data.Mouse.MouseData = (uint)scrollAmount;
 
-            InputList.Add(scroll);
+            _inputList.Add(scroll);
         }
         #endregion
 

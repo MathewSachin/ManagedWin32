@@ -1,6 +1,5 @@
 using System;
 using System.Drawing;
-using System.Runtime.InteropServices;
 using ManagedWin32.Api;
 
 namespace ManagedWin32
@@ -13,106 +12,91 @@ namespace ManagedWin32
                    hMemDC = Gdi32.CreateCompatibleDC(hDC),
                    hBitmap = Gdi32.CreateCompatibleBitmap(hDC, SystemParams.ScreenWidth, SystemParams.ScreenHeight);
 
-            if (hBitmap != IntPtr.Zero)
-            {
-                var hOld = Gdi32.SelectObject(hMemDC, hBitmap);
+            if (hBitmap == IntPtr.Zero)
+                return null;
 
-                Gdi32.BitBlt(hMemDC, 0, 0, SystemParams.ScreenWidth, SystemParams.ScreenHeight, hDC, 0, 0, CopyPixelOperation.SourceCopy);
+            var hOld = Gdi32.SelectObject(hMemDC, hBitmap);
 
-                Gdi32.SelectObject(hMemDC, hOld);
+            Gdi32.BitBlt(hMemDC, 0, 0, SystemParams.ScreenWidth, SystemParams.ScreenHeight, hDC, 0, 0, CopyPixelOperation.SourceCopy);
 
-                return Bitmap.FromHbitmap(hBitmap);
-            }
-            return null;
+            Gdi32.SelectObject(hMemDC, hOld);
+
+            return Bitmap.FromHbitmap(hBitmap);
         }
 
         public static Bitmap CaptureCursor(ref int x, ref int y)
         {
-            IntPtr hicon;
+            CursorInfo ci;
 
-            var ci = new CursorInfo() { cbSize = Marshal.SizeOf(typeof(CursorInfo)) };
+            if (!User32.GetCursorInfo(out ci))
+                return null;
+
+            if (ci.flags != User32.CURSOR_SHOWING)
+                return null;
+
+            var hicon = User32.CopyIcon(ci.hCursor);
 
             IconInfo icInfo;
 
-            if (User32.GetCursorInfo(out ci))
-            {
-                if (ci.flags == User32.CURSOR_SHOWING)
-                {
-                    hicon = User32.CopyIcon(ci.hCursor);
+            if (!User32.GetIconInfo(hicon, out icInfo))
+                return null;
 
-                    if (User32.GetIconInfo(hicon, out icInfo))
-                    {
-                        x = ci.ptScreenPos.X - ((int)icInfo.xHotspot);
-                        y = ci.ptScreenPos.Y - ((int)icInfo.yHotspot);
+            x = ci.ptScreenPos.X - icInfo.xHotspot;
+            y = ci.ptScreenPos.Y - icInfo.yHotspot;
 
-                        return Icon.FromHandle(hicon).ToBitmap();
-                    }
-                }
-            }
-
-            return null;
+            return Icon.FromHandle(hicon).ToBitmap();
         }
 
         public static Bitmap CaptureDesktopWithCursor()
         {
             int cursorX = 0, cursorY = 0;
-            Bitmap desktopBMP, cursorBMP;
-            Graphics g;
-            Rectangle r;
 
-            desktopBMP = CaptureDesktop();
-            cursorBMP = CaptureCursor(ref cursorX, ref cursorY);
-            if (desktopBMP != null)
-            {
-                if (cursorBMP != null)
-                {
-                    r = new Rectangle(cursorX, cursorY, cursorBMP.Width, cursorBMP.Height);
-                    g = Graphics.FromImage(desktopBMP);
-                    g.DrawImage(cursorBMP, r);
-                    g.Flush();
+            var desktopBMP = CaptureDesktop();
+            var cursorBMP = CaptureCursor(ref cursorX, ref cursorY);
 
-                    return desktopBMP;
-                }
-                else return desktopBMP;
-            }
+            if (desktopBMP == null)
+                return null;
 
-            return null;
+            if (cursorBMP == null)
+                return desktopBMP;
+
+            var r = new Rectangle(cursorX, cursorY, cursorBMP.Width, cursorBMP.Height);
+            var g = Graphics.FromImage(desktopBMP);
+            g.DrawImage(cursorBMP, r);
+            g.Flush();
+
+            return desktopBMP;
         }
 
         public static Bitmap Capture(IntPtr Window)
         {
             IntPtr SourceDC = User32.GetWindowDC(Window),
-                MemoryDC = Gdi32.CreateCompatibleDC(SourceDC);
+                   MemoryDC = Gdi32.CreateCompatibleDC(SourceDC);
 
             var rect = new RECT();
             User32.GetWindowRect(Window, ref rect);
 
             int Width = rect.Right - rect.Left,
-                    Height = rect.Bottom - rect.Top;
+                Height = rect.Bottom - rect.Top;
 
             // Create a bitmap we can copy it to
-            IntPtr hBmp = Gdi32.CreateCompatibleBitmap(SourceDC, Width, Height);
+            var hBmp = Gdi32.CreateCompatibleBitmap(SourceDC, Width, Height);
 
-            if (hBmp != null)
+            try
             {
-                try
-                {
-                    // select the bitmap object
-                    IntPtr hOld = Gdi32.SelectObject(MemoryDC, hBmp);
+                // select the bitmap object
+                var hOld = Gdi32.SelectObject(MemoryDC, hBmp);
 
-                    // bitblt over
-                    Gdi32.BitBlt(MemoryDC, 0, 0, Width, Height, SourceDC, 0, 0, CopyPixelOperation.SourceCopy);
+                // bitblt over
+                Gdi32.BitBlt(MemoryDC, 0, 0, Width, Height, SourceDC, 0, 0, CopyPixelOperation.SourceCopy);
 
-                    // restore selection
-                    Gdi32.SelectObject(MemoryDC, hOld);
+                // restore selection
+                Gdi32.SelectObject(MemoryDC, hOld);
 
-                    // get a .NET image object for it
-                    return Bitmap.FromHbitmap(hBmp);
-                }
-                finally { Gdi32.DeleteObject(hBmp); }
+                // get a .NET image object for it
+                return Bitmap.FromHbitmap(hBmp);
             }
-
-            return null;
+            finally { Gdi32.DeleteObject(hBmp); }
         }
 
         public static Bitmap CaptureScreen()
@@ -121,7 +105,7 @@ namespace ManagedWin32
 
             using (var graphics = Graphics.FromImage(bitmap))
             {
-                graphics.CopyFromScreen(0, 0, 0, 0, new System.Drawing.Size(SystemParams.ScreenWidth, SystemParams.ScreenHeight));
+                graphics.CopyFromScreen(0, 0, 0, 0, new Size(SystemParams.ScreenWidth, SystemParams.ScreenHeight));
                 return bitmap;
             }
         }

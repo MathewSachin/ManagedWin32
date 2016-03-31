@@ -29,5 +29,5 @@ namespace ManagedWin32.Api
         /// Check for restrictions on creating or restoring power schemes.
         /// </summary>
         ACCESS_CREATE_SCHEME = 0x14
-    };
+    }
 }

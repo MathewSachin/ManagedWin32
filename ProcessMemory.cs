@@ -26,7 +26,7 @@ namespace ManagedWin32
 
         public byte[] Read(IntPtr MemoryAddress, uint bytesToRead, out int bytesRead)
         {
-            byte[] buffer = new byte[bytesToRead];
+            var buffer = new byte[bytesToRead];
 
             IntPtr ptrBytesRead;
             Kernel32.ReadProcessMemory(ProcessHandle, MemoryAddress, buffer, bytesToRead, out ptrBytesRead);

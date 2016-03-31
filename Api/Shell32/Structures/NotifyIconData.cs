@@ -66,7 +66,7 @@ namespace ManagedWin32.Api
 
         /// <summary>
         /// A value that specifies which bits of the state member are retrieved or modified.
-        /// For example, setting this member to <see cref="Interop.IconState.Hidden"/>
+        /// For example, setting this member to <see cref="IconState.Hidden"/>
         /// causes only the item's hidden
         /// state to be retrieved.
         /// </summary>
@@ -80,7 +80,7 @@ namespace ManagedWin32.Api
         public string BalloonText;
 
         /// <summary>
-        /// Mainly used to set the version when <see cref="WinApi.Shell_NotifyIcon"/> is invoked
+        /// Mainly used to set the version when <see cref="Shell32.Shell_NotifyIcon"/> is invoked
         /// with <see cref="NotifyCommand.SetVersion"/>. However, for legacy operations,
         /// the same member is also used to set timouts for balloon ToolTips.
         /// </summary>
@@ -110,7 +110,7 @@ namespace ManagedWin32.Api
         /// <summary>
         /// Windows Vista (Shell32.dll version 6.0.6) and later. The handle of a customized
         /// balloon icon provided by the application that should be used independently
-        /// of the tray icon. If this member is non-NULL and the <see cref="Interop.BalloonFlags.User"/>
+        /// of the tray icon. If this member is non-NULL and the <see cref="BalloonFlags.User"/>
         /// flag is set, this icon is used as the balloon icon.<br/>
         /// If this member is NULL, the legacy behavior is carried out.
         /// </summary>
@@ -158,7 +158,7 @@ namespace ManagedWin32.Api
             data.ValidMembers = IconDataMembers.Message | IconDataMembers.Icon | IconDataMembers.Tip;
 
             //reset strings
-            data.ToolTipText = data.BalloonText = data.BalloonTitle = String.Empty;
+            data.ToolTipText = data.BalloonText = data.BalloonTitle = string.Empty;
 
             return data;
         }

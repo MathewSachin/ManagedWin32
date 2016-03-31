@@ -50,8 +50,8 @@ namespace ManagedWin32.Api
         {
             get
             {
-                int color = 0;
-                bool opaque = true;
+                var color = 0;
+                var opaque = true;
 
                 DwmGetColorizationColor(ref color, ref opaque);
 
@@ -63,8 +63,8 @@ namespace ManagedWin32.Api
         {
             get
             {
-                int color = 0;
-                bool opaque = true;
+                var color = 0;
+                var opaque = true;
 
                 DwmGetColorizationColor(ref color, ref opaque);
 

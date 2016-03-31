@@ -69,7 +69,7 @@ namespace ManagedWin32
 
         public LibraryResource[] EnumerateResources(ResourceType RType)
         {
-            List<LibraryResource> FoundResources = new List<LibraryResource>();
+            var FoundResources = new List<LibraryResource>();
 
             EnumResNameProc Callback = (h, t, name, l) =>
             {
@@ -116,10 +116,10 @@ namespace ManagedWin32
         {
             get
             {
-                IntPtr hRes = Kernel32.LoadResource(LibraryHandle, Handle);
-                IntPtr LockedRes = Kernel32.LockResource(hRes);
+                var hRes = Kernel32.LoadResource(LibraryHandle, Handle);
+                var LockedRes = Kernel32.LockResource(hRes);
 
-                byte[] buffer = new byte[Size];
+                var buffer = new byte[Size];
                 Marshal.Copy(LockedRes, buffer, 0, Size);
 
                 return buffer;

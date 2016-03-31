@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Interop;
@@ -20,7 +20,7 @@ namespace ManagedWin32
         /// <param name="hWnd">Handle</param>
         public WindowHandler(IntPtr hWnd)
         {
-            if (!User32.IsWindow(hWnd)) throw new ArgumentException("The Specified Handle is not a Window.", "hWnd");
+            if (!User32.IsWindow(hWnd)) throw new ArgumentException("The Specified Handle is not a Window.", nameof(hWnd));
             this.Handle = hWnd;
         }
 
@@ -32,13 +32,7 @@ namespace ManagedWin32
 
         public string Title
         {
-            get
-            {
-                if (Handle == DesktopWindow.Handle)
-                    return "Desktop";
-
-                return User32.GetWindowText(Handle);                
-            }
+            get { return Handle == DesktopWindow.Handle ? "Desktop" : User32.GetWindowText(Handle); }
             set { User32.SetWindowText(Handle, value); }
         }
 
@@ -58,7 +52,7 @@ namespace ManagedWin32
 
         public bool IsForegroundWindow => Handle == User32.GetForegroundWindow();
 
-        public bool IsUntitled => String.IsNullOrEmpty(Title);
+        public bool IsUntitled => string.IsNullOrEmpty(Title);
 
         /// <summary>
         /// Sets this Window Object's visibility
@@ -69,7 +63,7 @@ namespace ManagedWin32
             set
             {
                 //show the window
-                if (value == true) 
+                if (value) 
                     User32.ShowWindowAsync(Handle, ShowWindowFlags.Normal);
 
                 //hide the window
@@ -100,11 +94,10 @@ namespace ManagedWin32
             get
             {
                 int pid;
-                int tid = User32.GetWindowThreadProcessId(Handle, out pid);
+                var tid = User32.GetWindowThreadProcessId(Handle, out pid);
                 
-                foreach (ProcessThread t in Process.GetProcessById(pid).Threads)
-                    if (t.Id == tid)
-                        return t;
+                foreach (var t in from ProcessThread t in Process.GetProcessById(pid).Threads where t.Id == tid select t)
+                    return t;
 
                 throw new Exception("Thread not found");
             }
@@ -118,9 +111,8 @@ namespace ManagedWin32
         {
             get
             {
-                IntPtr res = User32.GetWindow(Handle, GetWindowEnum.Next);
-                if (res == IntPtr.Zero) return null;
-                return new WindowHandler(res);
+                var res = User32.GetWindow(Handle, GetWindowEnum.Next);
+                return res == IntPtr.Zero ? null : new WindowHandler(res);
             }
         }
 
@@ -132,9 +124,8 @@ namespace ManagedWin32
         {
             get
             {
-                IntPtr res = User32.GetWindow(Handle, GetWindowEnum.Previous);
-                if (res == IntPtr.Zero) return null;
-                return new WindowHandler(res);
+                var res = User32.GetWindow(Handle, GetWindowEnum.Previous);
+                return res == IntPtr.Zero ? null : new WindowHandler(res);
             }
         }
         #endregion
@@ -194,10 +185,7 @@ namespace ManagedWin32
             return Title.Length > 0 ? Title : Process.ProcessName;
         }
 
-        public override bool Equals(object obj)
-        {
-            return (obj is WindowHandler) ? Handle == (obj as WindowHandler).Handle : false;
-        }
+        public override bool Equals(object obj) => (obj is WindowHandler) && Handle == ((WindowHandler) obj).Handle;
         
         public Size Size
         {
@@ -206,7 +194,7 @@ namespace ManagedWin32
                 var rect = new RECT();
                 User32.GetWindowRect(Handle, ref rect);
 
-                return new Size()
+                return new Size
                 {
                     Width = rect.Right - rect.Left,
                     Height = rect.Bottom - rect.Top

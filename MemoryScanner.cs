@@ -7,7 +7,7 @@ namespace ManagedWin32
 {
     public abstract class MemoryScan<T> where T : IEquatable<T>
     {
-        public MemoryScan(Process Process) { reader = new ProcessMemory(Process); }
+        protected MemoryScan(Process Process) { reader = new ProcessMemory(Process); }
 
         #region Constant fields
         //Maximum memory block size to read in every read process.
@@ -71,64 +71,64 @@ namespace ManagedWin32
         //Cancel the scan started.
         public override void Cancel()
         {
-            if (thread != null)
-            {
-                //If the thread is already defined and is Alive,
-                if (thread.IsAlive)
-                {
-                    OnScanCancelled();
+            if (thread == null)
+                return;
 
-                    //and then abort the thread that scanes the memory.
-                    thread.Abort();
-                }
-            }
+            //If the thread is already defined and is Alive,
+            if (!thread.IsAlive)
+                return;
+
+            OnScanCancelled();
+
+            //and then abort the thread that scanes the memory.
+            thread.Abort();
         }
 
         void Scanner(T Value)
         {
             //The difference of scan start point in all loops except first loop,
             //that doesn't have any difference, is type's Bytes count minus 1.
-            int BytesCount = typeof(T) == typeof(short) ? 2
+            var BytesCount = typeof(T) == typeof(short) ? 2
                 : typeof(T) == typeof(int) ? 4
                 : typeof(T) == typeof(long) ? 8
                 : 0;
 
-            int arraysDifference = BytesCount - 1;
+            var arraysDifference = BytesCount - 1;
 
             //Define a List object to hold the found memory addresses.
-            List<int> finalList = new List<int>();
+            var finalList = new List<int>();
 
             //Open the pocess to read the memory.
             reader.Open();
 
             //Calculate the size of memory to scan.
-            int memorySize = (int)((int)lastAddress - (int)baseAddress);
+            var memorySize = (int)lastAddress - (int)baseAddress;
 
             //If more that one block of memory is requered to be read,
             if (memorySize >= ReadStackSize)
             {
                 //Count of loops to read the memory blocks.
-                int loopsCount = memorySize / ReadStackSize;
+                var loopsCount = memorySize / ReadStackSize;
 
                 //Look to see if there is any other bytes let after the loops.
-                int outOfBounds = memorySize % ReadStackSize;
+                var outOfBounds = memorySize % ReadStackSize;
 
                 //Set the currentAddress to first address.
-                int currentAddress = (int)baseAddress;
+                var currentAddress = (int)baseAddress;
 
                 //This will be used to check if any bytes have been read from the memory.
                 int bytesReadSize;
 
                 //Set the size of the bytes blocks.
-                int bytesToRead = ReadStackSize;
+                var bytesToRead = ReadStackSize;
 
                 //An array to hold the bytes read from the memory.
                 byte[] array;
 
-                for (int i = 0; i < loopsCount; i++)
+                for (var i = 0; i < loopsCount; i++)
                 {
                     //Calculte and set the progress percentage.
-                    OnScanProgressChanged((int)(((double)(currentAddress - (int)baseAddress) / (double)memorySize) * 100d));
+                    OnScanProgressChanged((int)(((currentAddress - (int)baseAddress) / (double)memorySize) * 100d));
 
                     //Read the bytes from the memory.
                     array = reader.Read((IntPtr)currentAddress, (uint)bytesToRead, out bytesReadSize);
@@ -137,25 +137,25 @@ namespace ManagedWin32
                     if (bytesReadSize > 0)
                     {
                         //Loop through the bytes one by one to look for the values.
-                        for (int j = 0; j < array.Length - arraysDifference; j++)
+                        for (var j = 0; j < array.Length - arraysDifference; j++)
                         {
                             if (typeof(T) == typeof(short))
                             {
                                 if (Value.Equals(BitConverter.ToInt16(array, j)))
                                     //add it's memory address to the finalList.
-                                    finalList.Add(j + (int)currentAddress);
+                                    finalList.Add(j + currentAddress);
                             }
                             else if (typeof(T) == typeof(int))
                             {
                                 if (Value.Equals(BitConverter.ToInt32(array, j)))
                                     //add it's memory address to the finalList.
-                                    finalList.Add(j + (int)currentAddress);
+                                    finalList.Add(j + currentAddress);
                             }
                             else if (typeof(T) == typeof(long))
                             {
                                 if (Value.Equals(BitConverter.ToInt64(array, j)))
                                     //add it's memory address to the finalList.
-                                    finalList.Add(j + (int)currentAddress);
+                                    finalList.Add(j + currentAddress);
                             }
                         }
                     }
@@ -172,34 +172,34 @@ namespace ManagedWin32
                 if (outOfBounds > 0)
                 {
                     //Read the additional bytes.
-                    byte[] outOfBoundsBytes = reader.Read((IntPtr)currentAddress, (uint)((int)lastAddress - currentAddress), out bytesReadSize);
+                    var outOfBoundsBytes = reader.Read((IntPtr)currentAddress, (uint)((int)lastAddress - currentAddress), out bytesReadSize);
 
                     //If any byte is read from the memory (there has been any bytes in the memory block),
                     if (bytesReadSize > 0)
                     {
                         //Loop through the bytes one by one to look for the values.
-                        for (int j = 0; j < outOfBoundsBytes.Length - arraysDifference; j++)
+                        for (var j = 0; j < outOfBoundsBytes.Length - arraysDifference; j++)
                         {
                             if (typeof(T) == typeof(short))
                             {
                                 //If any value is equal to what we are looking for,
                                 if (Value.Equals(BitConverter.ToInt16(outOfBoundsBytes, j)))
                                     //add it's memory address to the finalList.
-                                    finalList.Add(j + (int)currentAddress);
+                                    finalList.Add(j + currentAddress);
                             }
                             else if (typeof(T) == typeof(int))
                             {
                                 //If any value is equal to what we are looking for,
                                 if (Value.Equals(BitConverter.ToInt32(outOfBoundsBytes, j)))
                                     //add it's memory address to the finalList.
-                                    finalList.Add(j + (int)currentAddress);
+                                    finalList.Add(j + currentAddress);
                             }
                             else if (typeof(T) == typeof(long))
                             {
                                 //If any value is equal to what we are looking for,
                                 if (Value.Equals(BitConverter.ToInt64(outOfBoundsBytes, j)))
                                     //add it's memory address to the finalList.
-                                    finalList.Add(j + (int)currentAddress);
+                                    finalList.Add(j + currentAddress);
                             }
                         }
                     }
@@ -209,43 +209,43 @@ namespace ManagedWin32
             else
             {
                 //Calculate the memory block's size.
-                int blockSize = memorySize % ReadStackSize;
+                var blockSize = memorySize % ReadStackSize;
 
                 //Set the currentAddress to first address.
-                int currentAddress = (int)baseAddress;
+                var currentAddress = (int)baseAddress;
 
                 //Holds the count of bytes read from the memory.
-                int bytesReadSize;
 
                 //If the memory block can contain at least one 16 bit variable.
                 if (blockSize > BytesCount)
                 {
                     //Read the bytes to the array.
-                    byte[] array = reader.Read((IntPtr)currentAddress, (uint)blockSize, out bytesReadSize);
+                    int bytesReadSize;
+                    var array = reader.Read((IntPtr)currentAddress, (uint)blockSize, out bytesReadSize);
 
                     //If any byte is read,
                     if (bytesReadSize > 0)
                     {
                         //Loop through the array to find the values.
-                        for (int j = 0; j < array.Length - arraysDifference; j++)
+                        for (var j = 0; j < array.Length - arraysDifference; j++)
                         {
                             if (typeof(T) == typeof(short))
                             {
                                 if (Value.Equals(BitConverter.ToInt16(array, j)))
                                     //add it's memory address to the finalList.
-                                    finalList.Add(j + (int)currentAddress);
+                                    finalList.Add(j + currentAddress);
                             }
                             else if (typeof(T) == typeof(int))
                             {
                                 if (Value.Equals(BitConverter.ToInt32(array, j)))
                                     //add it's memory address to the finalList.
-                                    finalList.Add(j + (int)currentAddress);
+                                    finalList.Add(j + currentAddress);
                             }
                             else if (typeof(T) == typeof(long))
                             {
                                 if (Value.Equals(BitConverter.ToInt64(array, j)))
                                     //add it's memory address to the finalList.
-                                    finalList.Add(j + (int)currentAddress);
+                                    finalList.Add(j + currentAddress);
                             }
                         }
                     }
@@ -280,7 +280,7 @@ namespace ManagedWin32
         {
             Cancel();
 
-            thread = new Thread(new ParameterizedThreadStart((o) => Scanner(Value)));
+            thread = new Thread(o => Scanner(Value));
 
             thread.Start();
         }
@@ -288,67 +288,66 @@ namespace ManagedWin32
         //Cancel the scan started.
         public override void Cancel()
         {
-            if (thread != null)
-            {
-                //If the thread is already defined and is Alive,
-                if (thread.IsAlive)
-                {
-                    OnScanCancelled();
+            if (thread == null)
+                return;
 
-                    //and then abort the alive thread and so cancel last scan task.
-                    thread.Abort();
-                }
-            }
+            //If the thread is already defined and is Alive,
+            if (!thread.IsAlive)
+                return;
+
+            OnScanCancelled();
+
+            //and then abort the alive thread and so cancel last scan task.
+            thread.Abort();
         }
 
         void Scanner(T Value)
         {
-            uint BytesCount = typeof(T) == typeof(short) ? 2u
+            var BytesCount = typeof(T) == typeof(short) ? 2u
                 : typeof(T) == typeof(int) ? 4u
                 : typeof(T) == typeof(long) ? 8u
                 : 0;
 
             //Define a List object to hold the found memory addresses.
-            List<int> finalList = new List<int>();
+            var finalList = new List<int>();
 
             //Open the pocess to read the memory.
             reader.Open();
 
             //This will be used to check if any bytes have been read from the memory.
-            int bytesReadSize;
 
             //An array to hold the bytes read from the memory.
-            byte[] array;
 
-            for (int i = 0; i < addresses.Length; i++)
+            for (var i = 0; i < addresses.Length; i++)
             {
                 //Calculte and set the progress percentage.
-                OnScanProgressChanged((int)(((double)i / (double)addresses.Length) * 100d));
+                OnScanProgressChanged((int)((i / (double)addresses.Length) * 100d));
 
                 //Read the bytes from the memory.
-                array = reader.Read((IntPtr)addresses[i], BytesCount, out bytesReadSize);
+                int bytesReadSize;
+                var array = reader.Read((IntPtr)addresses[i], BytesCount, out bytesReadSize);
 
                 //If any byte is read from the memory (there has been any bytes in the memory block),
-                if (bytesReadSize > 0)
+                if (bytesReadSize <= 0)
+                    continue;
+
+                if (typeof(T) == typeof(short))
                 {
-                    if (typeof(T) == typeof(short))
-                    {
-                        if (Value.Equals(BitConverter.ToInt16(array, 0)))
-                            //add it's memory address to the finalList.
-                            finalList.Add(addresses[i]);
-                    }
-                    else if (typeof(T) == typeof(int))
-                    {
-                        if (Value.Equals(BitConverter.ToInt32(array, 0)))
-                            //add it's memory address to the finalList.
-                            finalList.Add(addresses[i]);
-                    }
-                    else if (typeof(T) == typeof(long))
-                    {
-                        if (Value.Equals(BitConverter.ToInt64(array, 0)))
-                            //add it's memory address to the finalList.
-                            finalList.Add(addresses[i]);
-                    }
+                    if (Value.Equals(BitConverter.ToInt16(array, 0)))
+                        //add it's memory address to the finalList.
+                        finalList.Add(addresses[i]);
+                }
+                else if (typeof(T) == typeof(int))
+                {
+                    if (Value.Equals(BitConverter.ToInt32(array, 0)))
+                        //add it's memory address to the finalList.
+                        finalList.Add(addresses[i]);
+                }
+                else if (typeof(T) == typeof(long))
+                {
+                    if (Value.Equals(BitConverter.ToInt64(array, 0)))
+                        //add it's memory address to the finalList.
+                        finalList.Add(addresses[i]);
                 }
             }
             //Close the handle to the process to avoid process errors.
@@ -400,7 +399,7 @@ namespace ManagedWin32
 
             records = new List<MemoryRecords>();
 
-            timer.Elapsed += new System.Timers.ElapsedEventHandler(TimerElapsed);
+            timer.Elapsed += TimerElapsed;
         }
 
         //Add a memory address and a 16 bit value to be written in the address.
@@ -423,17 +422,18 @@ namespace ManagedWin32
             writer.Open();
 
             //Loop and set the value of all addresses.
-            for (int i = 0; i < records.Count; i++)
+            foreach (var t in records)
             {
-                if (records[i].Type == typeof(short))
-                    writer.Write((IntPtr)records[i].Address, BitConverter.GetBytes((short)(object)records[i].Value));
+                if (t.Type == typeof(short))
+                    writer.Write((IntPtr)t.Address, BitConverter.GetBytes((short)(object)t.Value));
 
-                else if (records[i].Type == typeof(int))
-                    writer.Write((IntPtr)records[i].Address, BitConverter.GetBytes((int)(object)records[i].Value));
+                else if (t.Type == typeof(int))
+                    writer.Write((IntPtr)t.Address, BitConverter.GetBytes((int)(object)t.Value));
 
-                else if (records[i].Type == typeof(long))
-                    writer.Write((IntPtr)records[i].Address, BitConverter.GetBytes((long)(object)records[i].Value));
+                else if (t.Type == typeof(long))
+                    writer.Write((IntPtr)t.Address, BitConverter.GetBytes((long)(object)t.Value));
             }
+
             //Close the handle to the process.
             writer.Dispose();
         }

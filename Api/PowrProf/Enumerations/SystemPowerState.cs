@@ -9,6 +9,6 @@
         Sleeping3 = 4,
         Hibernate = 5,
         Shutdown = 6,
-        Maximum = 7,
+        Maximum = 7
     }
 }
